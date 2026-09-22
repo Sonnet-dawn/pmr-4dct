@@ -7,7 +7,7 @@ abstract: >-
   identity. Full-resolution (1 mm) registration of 144 million voxels fits in
   2.4 GB of GPU memory, with a verification suite that runs alongside training.
 type: software
-version: 1.0.1
+version: 1.0.2
 date-released: "2026-09-22"
 license: MIT
 repository-code: "https://github.com/Sonnet-dawn/pmr-4dct"
