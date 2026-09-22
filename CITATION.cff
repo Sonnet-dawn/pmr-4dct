@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "PMR: memory-scalable 4D-CT deformable registration for consumer GPUs"
+abstract: >-
+  Phase-manifold registration of 4D-CT: the ten breathing phases are represented
+  as one periodic curve in the breathing phase, so loop closure is an algebraic
+  identity. Full-resolution (1 mm) registration of 144 million voxels fits in
+  2.4 GB of GPU memory, with a verification suite that runs alongside training.
+type: software
+version: 1.0.0
+date-released: "TODO-YYYY-MM-DD"
+license: MIT
+repository-code: "TODO-REPO-URL"
+doi: "TODO-ZENODO-DOI"
+# TODO(authors): replace with one entry per author, in the paper's author order.
+#   ORCID is optional; omit the line for any author who does not have one.
+authors:
+  - name: "The PMR Authors"
+#   - family-names: "TODO-FAMILY"
+#     given-names: "TODO-GIVEN"
+#     affiliation: "TODO-AFFILIATION"
+#     orcid: "https://orcid.org/TODO-ORCID"
