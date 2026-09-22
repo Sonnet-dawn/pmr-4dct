@@ -142,11 +142,16 @@ revision stays retrievable even if this repository moves or disappears:
 
 | | |
 |---|---|
+| **DOI (cite this)** | **[10.5281/zenodo.22899963](https://doi.org/10.5281/zenodo.22899963)** |
 | Repository | https://github.com/Sonnet-dawn/pmr-4dct |
-| Release v1.0.0 | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.0 |
-| SWH snapshot | `swh:1:snp:79ee9891654af964a13f8f68a6f562b54908e6a9` |
-| SWH revision (v1.0.0 tag) | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
-| SWH revision (`main`) | `swh:1:rev:1090be2934ea707c33e2da25bcd27b180be3cee4` |
+| Release v1.0.2 | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.2 |
+| Zenodo record | https://zenodo.org/record/22899963 |
+| SWH snapshot | `swh:1:snp:2871fbfe6e030ec739c82f1c5bdb3c855155fdf1` |
+| SWH revision (v1.0.2) | `swh:1:rev:9770ffc7ee5fd7fe6e0f45ae01b318850108892c` |
+| SWH revision (v1.0.0) | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
+
+The source is archived in two independent places: **Zenodo** (with a DOI) and
+**Software Heritage** (long-term code archive, DOI-independent).
 
 Browse: <https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/Sonnet-dawn/pmr-4dct>
 
