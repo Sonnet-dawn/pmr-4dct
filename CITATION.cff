@@ -7,11 +7,16 @@ abstract: >-
   identity. Full-resolution (1 mm) registration of 144 million voxels fits in
   2.4 GB of GPU memory, with a verification suite that runs alongside training.
 type: software
-version: 1.0.0
-date-released: "TODO-YYYY-MM-DD"
+version: 1.0.1
+date-released: "2026-09-22"
 license: MIT
-repository-code: "TODO-REPO-URL"
-doi: "TODO-ZENODO-DOI"
+repository-code: "https://github.com/Sonnet-dawn/pmr-4dct"
+url: "https://github.com/Sonnet-dawn/pmr-4dct"
+# zenodo DOI: to be added on archival (see README "Archival").
+identifiers:
+  - type: swh
+    value: "swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a"
+    description: "Software Heritage archive of the v1.0.0 revision"
 # TODO(authors): replace with one entry per author, in the paper's author order.
 #   ORCID is optional; omit the line for any author who does not have one.
 authors:

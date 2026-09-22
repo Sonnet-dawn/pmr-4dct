@@ -131,8 +131,26 @@ running four large cases concurrently exhausted an 8 GB card and destabilised th
 
 ## Citation
 
-See `CITATION.cff` (DOI to be assigned on release).
+See `CITATION.cff`. If you use this software, please cite the archived release rather than
+the moving `main` branch.
+
+## Archival
+
+The source is archived **independently of GitHub** in
+[Software Heritage](https://www.softwareheritage.org/), which guarantees that the exact
+revision stays retrievable even if this repository moves or disappears:
+
+| | |
+|---|---|
+| Repository | https://github.com/Sonnet-dawn/pmr-4dct |
+| Release v1.0.0 | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.0 |
+| SWH snapshot | `swh:1:snp:79ee9891654af964a13f8f68a6f562b54908e6a9` |
+| SWH revision (v1.0.0 tag) | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
+| SWH revision (`main`) | `swh:1:rev:1090be2934ea707c33e2da25bcd27b180be3cee4` |
+
+Browse: <https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/Sonnet-dawn/pmr-4dct>
 
 ## License
 
-MIT for the code. The DIR-Lab dataset has its own terms and is not included.
+MIT for the code. Neither the DIR-Lab nor the CREATIS dataset is included; both have their
+own terms.
