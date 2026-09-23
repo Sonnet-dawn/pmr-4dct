@@ -1,14 +1,20 @@
 # PMR — Phase-Manifold Registration for 4D-CT
 
+[![verification](https://github.com/Sonnet-dawn/pmr-4dct/actions/workflows/verify.yml/badge.svg)](https://github.com/Sonnet-dawn/pmr-4dct/actions/workflows/verify.yml)
+
 Memory-scalable deformable registration of 4D-CT, targeting consumer GPUs.
 
 * **144 million voxels** (10 phases at 1 mm) at a measured peak of **2.4-3.3 GiB** of GPU
   memory, on an 8 GiB laptop card.
 * Exact **loop closure** by construction: `d(x,0) = d(x,2π) = 0` is an algebraic
   identity, not a penalty.
-* A verification suite that runs with every training job — and that has caught **seven**
-  real defects in this codebase, including two that were completely silent
+* A verification suite that runs with every training job — and that has caught **twelve**
+  documented defects in this codebase, **ten** of which were completely silent
   (`docs/verification.md`).
+
+> The CI badge covers the **data-free** subset of the suite only: the DIR-Lab and CREATIS
+> volumes are not redistributable, so any check needing them would fail on a runner. The
+> data-dependent checks are run locally and are listed in `docs/verification.md`.
 
 > **Scope.** This package is about *scalability, verification and reproducibility*.
 > It does **not** claim state-of-the-art registration accuracy; see `LIMITATIONS.md`.
