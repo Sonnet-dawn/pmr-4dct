@@ -52,6 +52,8 @@ SUITE = [
      300, '降采样必须保留 origin/direction（DIRLAB origin=0 曾让此 bug 隐形）'),
     ('tre_convention', 'convention', 'verify_tre_convention.py', [],
      900, 'TRE 约定 + transformix 点文件单位/量化（解析已知答案的合成变换）'),
+    ('phase_selection', 'convention', 'verify_phase_selection.py', [],
+     300, '相位参数与 landmark 集的一致性（300 点集无中间相位 ⇒ 必须报错，不许静默）'),
     ('main_run', 'data', 'verify_main_run.py', ['main_base'],
      600, '主运行结果自洽：闭合恒等式、与 identity 的比较'),
     ('coarse_tre', 'data', 'verify_coarse_tre.py', [],

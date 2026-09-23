@@ -87,6 +87,52 @@ def creatis_valid_phases(cn, phases=None):
     return ok
 
 
+def resolve_tre_phases(spec, lm_set):
+    """把 `--tre-phases` 字符串解析为有序相位列表，并做**防静默**校验。
+
+    提到模块级是为了**可离线单测**（不需要 GPU / 不需要跑训练），见
+    `tools/test_tre_phases.py`。原实现把校验写在训练流程里，只有真跑起来才会报错。
+
+    规则：
+      * 空串 ⇒ `[]`（不评，主结果文件与历史完全一致）；
+      * 相位只能是 0–5（T00..T50）；
+      * `lm_set='300'` 时只允许 5 —— 300 点集**只有 T00/T50**，
+        要评中间相位必须显式改用 `--lm-set 4d75`，否则会拿不到点而静默出错。
+    """
+    if not spec or not spec.strip():
+        return []
+    want = sorted({int(x) for x in spec.split(',') if x.strip()})
+    bad = [k for k in want if k < 0 or k > 5]
+    if bad:
+        raise ValueError(f'--tre-phases 只支持 0–5（T00..T50），收到 {bad}')
+    if lm_set == '300' and any(k != 5 for k in want):
+        raise ValueError(
+            '300 点集只有 T00/T50，无法评估中间相位；'
+            '请改用 `--lm-set 4d75`（75 点 × 6 相位，文件由 '
+            'tools/make_4d75_points.py 生成）。')
+    return want
+
+
+def load_lm_4d75(cn, p_tgt):
+    """读取 DIR-LAB `4D-75` 标注集（**75 点 × 6 相位**）的 (T00, T{p_tgt}0) 对应点。
+
+    🔴 为什么需要它：300 点集**只有 T00/T50**，所以"相位维度"的精度证据原本只有
+    CREATIS 的 3 例。`4D-75` 覆盖 T00/T10/T20/T30/T40/T50，可把该维度扩到 **10 例**。
+    `_R` 版文件由 `tools/make_4d75_points.py` 生成：换算用每例 300 个已知对应点拟合出
+    **残差 ~1e-13 mm** 的逐轴仿射（`x_R=spacing·(x_raw−1)`、`z_R=2.5·(n_slices−z_raw)`），
+    且该仿射的两个参数**独立地**等于图像头里的 native spacing 与层数。
+    ⚠️ 口径：每相位**只有 75 点**，所以"4D-75 的 T50"与"300 点的 T50"是两个不同的数。
+    """
+    if p_tgt not in (0, 1, 2, 3, 4, 5):
+        raise ValueError(f'4D-75 只有 T00..T50（相位 0–5），收到 {p_tgt}')
+    d = os.path.join(DATA, 'DIRLAB', 'points', f'case{cn}')
+    a = np.loadtxt(os.path.join(d, f'case{cn}_4D75_T00_xyz_R.txt'))
+    b = np.loadtxt(os.path.join(d, f'case{cn}_4D75_T{p_tgt * 10:02d}_xyz_R.txt'))
+    if len(a) != len(b):
+        raise ValueError(f'case{cn} 4D-75: T00 有 {len(a)} 点、T{p_tgt*10:02d} 有 {len(b)} 点')
+    return a, b
+
+
 def load_lm_dataset(cn, dataset='dirlab', p_ref=0, p_tgt=5):
     """读取 (参考相位, 目标相位) 的对应 landmark，返回**原点相对**物理坐标 (N,3) mm。
 
@@ -602,6 +648,15 @@ def main():
     ap.add_argument('--tag', type=str, default='v2')
     ap.add_argument('--out', type=str, default=os.path.join(HERE, 'results', 'pmr_v2'))
     ap.add_argument('--save-dvf', type=int, default=0)
+    # ---- 多相位 TRE（默认关闭 ⇒ 主结果文件与历史完全一致，不新增字段值）----
+    ap.add_argument('--tre-phases', type=str, default='',
+                    help='要额外评估的目标相位，逗号分隔（0–5 对应 T00..T50）；'
+                         '空 = 不评（默认）。中间相位需配合 `--lm-set 4d75`，'
+                         '因为 300 点集只有 T00/T50。')
+    ap.add_argument('--lm-set', choices=['300', '4d75'], default='300',
+                    help='landmark 集：300（T00/T50，主口径）或 4d75（75 点 × 6 相位）。'
+                         '仅影响 `--tre-phases` 的额外评估，**不影响** '
+                         '`tre_total_STANDARD`（它恒用 300 点 T00/T50）。')
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--cudnn-benchmark', type=int, default=-1,
                     help='-1=沿用 pmr_fast 的默认(True)；0=关闭。'
@@ -810,6 +865,38 @@ def main():
     tre_m = float(np.linalg.norm(lm0 + sample_trilinear(d_m, lm0, spacing) - lm5, axis=1).mean())
     tre_t = float(np.linalg.norm(lm0 + sample_trilinear(d_t, lm0, spacing) - lm5, axis=1).mean())
 
+    # ---- 多相位 TRE（可选，`--tre-phases`）------------------------------------
+    # 动机：现有评估只报 T00→T50，无法说明"连续相位模型在**中间相位**是否也准"。
+    # 300 点集只有 T00/T50，因此中间相位必须用 DIR-LAB `4D-75`（75 点 × 6 相位）。
+    # ⚠️ 口径：`lm_set='4d75'` 时 T50 只有 75 点，与主结果的 300 点 T50 **不是同一个数**。
+    tre_by_phase = {}
+    if args.tre_phases:
+        try:
+            want = resolve_tre_phases(args.tre_phases, args.lm_set)
+        except ValueError as e:
+            sys.exit(f'🔴 {e}')
+        for k in want:
+            if args.lm_set == '4d75':
+                a0, ak = load_lm_4d75(cn, k)
+            else:
+                a0, ak = load_lm_dataset(cn, args.dataset)
+            if k == 5 and args.lm_set == '300':
+                tre_by_phase['5'] = {'tre': tre_t, 'init_tre': init, 'n_points': int(len(a0)),
+                                     'lm_set': '300', 'phase': 'T50'}
+                continue
+            with torch.no_grad():
+                dk = (d_base_list[k] + disp_full(coef_r, thetas[k], KR, (D, H, W)).squeeze(0))
+                dk = dk.cpu().numpy() * spacing[:, None, None, None]
+            tr = float(np.linalg.norm(
+                a0 + sample_trilinear(dk, a0, spacing) - ak, axis=1).mean())
+            it = float(np.linalg.norm(a0 - ak, axis=1).mean())
+            tre_by_phase[str(k)] = {'tre': tr, 'init_tre': it, 'n_points': int(len(a0)),
+                                    'lm_set': args.lm_set, 'phase': f'T{k*10:02d}'}
+            del dk
+        print('  [多相位 TRE] ' + ' | '.join(
+            f'{v["phase"]}: {v["tre"]:.3f} (init {v["init_tre"]:.3f}, n={v["n_points"]})'
+            for _, v in sorted(tre_by_phase.items())), flush=True)
+
     res = {'impl': 'pmr_v2', 'dataset': args.dataset, 'case': cn, 'caseid': caseid,
            # 🔴 元数据（2026-09-23 新增）：此前**没有记录 cudnn benchmark 的实际取值**，
            #    导致事后**无法从结果文件判断某次运行是否为确定性口径**。
@@ -830,6 +917,7 @@ def main():
            'n_vox': int(n_vox), 'peak_mem_gb': round(torch.cuda.max_memory_allocated() / 1024**3, 2)
            if device == 'cuda' else 0.0,
            'init_tre': init, 'tre_manifold_STD': tre_m, 'tre_total_STANDARD': tre_t,
+           'tre_by_phase': tre_by_phase or None, 'lm_set': args.lm_set,
            'mean_disp_mm_t50': round(mean_d, 4), 'p95_disp_mm_t50': round(p95_d, 4),
            'closure_0': clo0, 'closure_2pi': clo2, 'time_s': round(time.time() - t_start, 1)}
     res.update(nrm_extra)

@@ -86,12 +86,14 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 | Flag | Default | Why it matters |
 |---|---|---|
 | `--dataset {dirlab,creatis}` | `dirlab` | Which 4D-CT dataset. The two differ in HU offset, image origin and landmark phase coverage — all handled explicitly. |
-| `--mask {none,t00,union}` | `union` | Spatial support of the similarity. On DIR-Lab, whole-image support biases the solution toward small displacement; with a mask the 10-case mean TRE improves from 2.335 mm to 1.598 mm (**+31.6%**, all 10 cases). |
-| `--norm {robust,minmax}` | `robust` | `robust` clips to the 0.5–99.5 percentile. The DIR-Lab volumes contain isolated values near 13 400 against a background near 1 000; min–max scaling compresses lung contrast and costs **+72.9%** TRE. |
+| `--mask {none,t00,union}` | `union` | Spatial support of the similarity. On DIR-Lab, whole-image support biases the solution toward small displacement; against the matched control (`--res-reg-scale 1`), the 10-case mean TRE goes from 2.335 mm without a mask to 1.692 mm with one (**+27.6%**, nine of ten cases). |
+| `--norm {robust,minmax}` | `robust` | `robust` clips to the 0.5–99.5 percentile. The DIR-Lab volumes contain isolated values near 13 400 against a background near 1 000; min–max scaling compresses lung contrast and costs **+63.3%** TRE (all ten cases worse). |
 | `--res-reg-scale` | 1.0 | Scale of the **residual-stage** penalty. The global `--reg-scale` does **not** reach this stage. Setting it to 10 reduces folding by **17–57×** and improves TRE by ~5.6%. |
 | `--cudnn-benchmark {0,1}` | (upstream `True`) | Pass **0** for reproducibility. With the upstream default, an identical configuration varies by **6.2% (SD)** run to run; with 0 it is **0.2%**. |
 | `--metric {global,local,mind,ls,lsg}` | `local` | `ls`/`lsg` replace box-window local NCC with a **shaping-regularised Gaussian** window (`σ = win/√12`, so the kernel has the same second moment as the box it replaces). `ls` additionally weights each window by the reference's local structural significance. |
 | `--holdout-phases` | (none) | Comma-separated phase indices excluded from training, used to measure how well the periodic phase model predicts a phase it has never seen. |
+| `--tre-phases` | (none) | Extra target phases (0–5 = T00…T50) to report TRE for, written to a `tre_by_phase` block. Because the 300-point DIR-Lab set covers **only T00 and T50**, intermediate phases require `--lm-set 4d75`; asking for them with the 300-point set **raises** rather than silently evaluating the wrong points. |
+| `--lm-set {300,4d75}` | `300` | Which landmark set the *extra* phases use. `4d75` is DIR-Lab's 75-point, six-phase set. It never changes `tre_total_STANDARD`, which always uses the 300-point T00/T50 set. |
 | `--phases-per-step` | 2 | Phases sampled per optimiser step. |
 | `--local-mask-mode {select,weight}` | `select` | How per-window correlations are aggregated at the mask boundary. The choice materially changes the measured benefit of masking, so it is exposed rather than fixed. |
 | `--jac-weight` | 0.0 | Optional `det(J)` hinge penalty. Off by default; the residual-stage scale above is the cheaper folding control. |
