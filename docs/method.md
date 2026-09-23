@@ -81,7 +81,10 @@ image buffers small.
 Similarity is evaluated inside a lung mask derived from the images themselves. Whole-image
 support biases the solution toward small displacement, because the stationary majority of
 the field of view contributes to the loss while carrying no information about the motion.
-On DIR-Lab this costs **+31.6%** in mean TRE across all ten cases.
+On DIR-Lab, against a matched control (same run with the mask disabled), whole-image support
+costs **+27.6%** in mean TRE, with nine of the ten cases worse. (An earlier version of this
+repository quoted +31.6%, which compared against the *main* result — that run also differs in
+the residual-stage regularisation weight, so the figure was confounded. See docs/verification.md.)
 
 Masking is standard practice and is *not* claimed as a contribution here. It is exposed as a
 flag because the measured benefit depends on how per-window correlations are aggregated at
