@@ -100,10 +100,10 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 ## Reproducibility warning
 
 `torch.backends.cudnn.benchmark = True` (the upstream default) makes algorithm
-selection non-deterministic. We measured a **6.2% standard deviation and 18.6% range**
-across five runs of an *identical* configuration on the hardest DIR-Lab case.
-Pass `--cudnn-benchmark 0` to reduce this to **0.2%**. **Effects below ~5% are not
-interpretable without this control.**
+selection non-deterministic. Across five runs of an *identical* configuration on the
+hardest DIR-Lab case we measured a standard deviation of **6.2% of the mean** and a
+range of **17.0% of the mean** (0.56 mm). Pass `--cudnn-benchmark 0` to reduce this to
+**0.2%**. **Effects below ~5% are not interpretable without this control.**
 
 > All memory figures in this repository are **GiB** (2³⁰ bytes), matching what
 > `torch.cuda.max_memory_allocated()` reports.

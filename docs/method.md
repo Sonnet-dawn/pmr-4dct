@@ -111,7 +111,9 @@ instrumented. See `LIMITATIONS.md`. All memory figures are GiB (2³⁰ bytes), m
 `torch.backends.cudnn.benchmark` defaults to `True`, letting cuDNN choose convolution
 algorithms at runtime. On the hardest DIR-Lab case, five runs of an *identical*
 configuration gave TRE of 3.023, 3.216, 3.320, 3.354 and 3.584 mm: standard deviation
-**0.20 mm (6.2%)**, range **18.6%**. Passing `--cudnn-benchmark 0` reduces this to **0.2%**
+**0.20 mm (6.2% of the mean)**, range **0.56 mm (17.0% of the mean)**. (Relative to the
+lowest of the five the range is 18.6%; we quote it against the mean so that it uses the
+same basis as the standard deviation.) Passing `--cudnn-benchmark 0` reduces this to **0.2%**
 (1.13048 vs 1.13305 mm on case 1). Effects below ~5% are not interpretable without this
 control.
 
