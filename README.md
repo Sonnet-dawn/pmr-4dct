@@ -2,8 +2,8 @@
 
 Memory-scalable deformable registration of 4D-CT, targeting consumer GPUs.
 
-* **144 million voxels** (10 phases at 1 mm) at a measured peak of **2.4-3.3 GB** of GPU
-  memory, on an 8 GB laptop card.
+* **144 million voxels** (10 phases at 1 mm) at a measured peak of **2.4-3.3 GiB** of GPU
+  memory, on an 8 GiB laptop card.
 * Exact **loop closure** by construction: `d(x,0) = d(x,2π) = 0` is an algebraic
   identity, not a penalty.
 * A verification suite that runs with every training job — and that has caught **seven**
@@ -59,7 +59,7 @@ have silently broken implementations before, so both are handled explicitly:
 ## Quickstart
 
 ```bash
-# 2 mm working resolution (~5 min/case on an 8 GB laptop GPU)
+# 2 mm working resolution (~5 min/case on an 8 GiB laptop GPU)
 python src/pmr_v2.py --case 1 --down 2 --mask union --metric local \
     --res-reg-scale 10 --cudnn-benchmark 0
 
@@ -83,7 +83,7 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 | `--mask {none,t00,union}` | `union` | Spatial support of the similarity. On DIR-Lab, whole-image support biases the solution toward small displacement; with a mask the 10-case mean TRE improves from 2.335 mm to 1.598 mm (**+31.6%**, all 10 cases). |
 | `--norm {robust,minmax}` | `robust` | `robust` clips to the 0.5–99.5 percentile. The DIR-Lab volumes contain isolated values near 13 400 against a background near 1 000; min–max scaling compresses lung contrast and costs **+72.9%** TRE. |
 | `--res-reg-scale` | 1.0 | Scale of the **residual-stage** penalty. The global `--reg-scale` does **not** reach this stage. Setting it to 10 reduces folding by **17–57×** and improves TRE by ~5.6%. |
-| `--cudnn-benchmark {0,1}` | (upstream `True`) | Pass **0** for reproducibility. With the upstream default, an identical configuration varies by **5.8% (SD)** run to run; with 0 it is **0.2%**. |
+| `--cudnn-benchmark {0,1}` | (upstream `True`) | Pass **0** for reproducibility. With the upstream default, an identical configuration varies by **6.2% (SD)** run to run; with 0 it is **0.2%**. |
 | `--metric {global,local,mind,ls,lsg}` | `local` | `ls`/`lsg` replace box-window local NCC with a **shaping-regularised Gaussian** window (`σ = win/√12`, so the kernel has the same second moment as the box it replaces). `ls` additionally weights each window by the reference's local structural significance. |
 | `--holdout-phases` | (none) | Comma-separated phase indices excluded from training, used to measure how well the periodic phase model predicts a phase it has never seen. |
 | `--phases-per-step` | 2 | Phases sampled per optimiser step. |
@@ -94,10 +94,35 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 ## Reproducibility warning
 
 `torch.backends.cudnn.benchmark = True` (the upstream default) makes algorithm
-selection non-deterministic. We measured a **5.8% standard deviation and 18.6% range**
+selection non-deterministic. We measured a **6.2% standard deviation and 18.6% range**
 across five runs of an *identical* configuration on the hardest DIR-Lab case.
 Pass `--cudnn-benchmark 0` to reduce this to **0.2%**. **Effects below ~5% are not
 interpretable without this control.**
+
+> All memory figures in this repository are **GiB** (2³⁰ bytes), matching what
+> `torch.cuda.max_memory_allocated()` reports.
+
+## Why this exists: a measured memory–accuracy trade-off
+
+Mainstream pairwise tools are tuned for coarse B-spline control grids, and refining the grid
+is throttled by memory rather than by compute. Measured with elastix 5.3.1 on a 1 mm DIR-Lab
+volume (14.45 M voxels), with the control grid set explicitly:
+
+| B-spline grid | Control points | Peak RAM | Wall clock | Outcome |
+|---:|---:|---:|---:|---|
+| **8 mm** (elastix default) | 38,148 | **0.92 GiB** | 39 s | completed |
+| 4 mm | 261,950 | **5.63 GiB** (6.1×) | 352 s | completed |
+| 2 mm | — | **7.54 GiB** and rising | 5 s | **ran out of memory** |
+| 1 mm | — | **8.51 GiB** and rising | 6 s | **ran out of memory** |
+
+The control-point count grows as `1/g³` and the memory follows. Two caveats: the
+out-of-memory cases were terminated by *our* watchdog (the figures are lower bounds, not
+elastix's own reported failure), and the machine had only ~9–10 GiB free at the time.
+Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1`.
+
+> ⚠️ This is **not** a like-for-like benchmark. elastix performs one *pairwise* registration;
+> this package trains a continuous model over **all ten phases**. No ratio between the two
+> should be read as "faster" or "lighter".
 
 ## Verification
 
@@ -125,9 +150,9 @@ is** — more so than adding another unit test.
 ## Memory safety
 
 `run_v2_sweep.py` caps concurrency from the measured per-case peak memory
-(2.8 GB for the large DIR-Lab cases, 1.0 GB otherwise) and a runtime watchdog waits
+(2.8 GiB for the large DIR-Lab cases, 1.0 GiB otherwise) and a runtime watchdog waits
 for free GPU memory before each job. **Do not raise the concurrency manually** —
-running four large cases concurrently exhausted an 8 GB card and destabilised the host.
+running four large cases concurrently exhausted an 8 GiB card and destabilised the host.
 
 ## Citation
 

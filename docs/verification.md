@@ -25,8 +25,8 @@ python verification/folding_check.py --dvf <path> --case N --down 2
 | 2 | The residual stage's regularisation was hard-coded and unreachable from `--reg-scale` | Folding could not be reduced by tuning the documented flag; folding was 20-57x higher than assumed | `folding_check.py` | no |
 | 3 | A coarse-scale result was evaluated **on the coarse grid** | Case 8 TRE was reported as 4.02 mm; on the correct grid it is 7.59 mm | `verify_main_run.py` | **yes** |
 | 4 | `torch.quantile` has an input-size limit | A 1 mm run finished registration, then **crashed during evaluation and wrote no JSON** — the result was silently lost | missing result file | no |
-| 5 | `torch.backends.cudnn.benchmark = True` (upstream default) | Identical configurations varied by **5.8% (SD)**, range 18.6%. Two published-effect conclusions were drawn and later reversed | `--cudnn-benchmark 0` | **yes** |
-| 6 | Four concurrent large-case jobs | Exhausted an 8 GB card and **destabilised the host machine** | runtime watchdog added afterwards | no |
+| 5 | `torch.backends.cudnn.benchmark = True` (upstream default) | Identical configurations varied by **6.2% (SD)**, range 18.6%. Two published-effect conclusions were drawn and later reversed | `--cudnn-benchmark 0` | **yes** |
+| 6 | Four concurrent large-case jobs | Exhausted an 8 GiB card and **destabilised the host machine** | runtime watchdog added afterwards | no |
 | 7 | Integer down-sampling **dropped the output origin** | On a dataset whose images do not start at `(0,0,0)`, the sampling window shifted by 250 mm; out-of-bounds fill (`0`) is *soft-tissue* HU, so the corruption was invisible. Training loss never decreased; a naive reading would have concluded "the method does not handle large displacements" | `verify_resample_geometry.py` | **yes** |
 
 ## Why defect 7 is the instructive one

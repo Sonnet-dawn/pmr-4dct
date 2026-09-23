@@ -5,17 +5,21 @@
 2. **Not diffeomorphic.** 0.009%-0.003% of voxels have `det(J) <= 0` depending on the
    case (minimum `det(J) = -1.79` on the hardest case).
 3. **1 mm is only feasible for smaller volumes.** The large DIR-Lab cases (6-10) have
-   ~79 million voxels per phase at 1 mm, requiring roughly 20 GB; this does not fit on
-   an 8 GB card. The 1 mm results cover cases 1-5 only. The CREATIS volumes are larger
+   ~79 million voxels per phase at 1 mm, requiring roughly 20 GiB; this does not fit on
+   an 8 GiB card. The 1 mm results cover cases 1-5 only. The CREATIS volumes are larger
    still (up to 116 million voxels per phase at 1 mm) and are reported at 2 mm.
 4. **The coarse-grid formulation is not itself novel** — control-grid upsampling is
    standard (B-spline transforms). What is contributed here is an exact algebraic
    statement of the decomposition, a minimal-memory implementation, and the verification
    suite.
 5. **Lung masking is standard practice**, not a contribution of this work.
-6. **Derived numbers are labelled as such.** The memory a naive per-voxel
-   parameterisation *would* require is computed arithmetically; it was not measured.
-7. **Run-to-run variability** is 5.8% (SD) unless `--cudnn-benchmark 0` is used.
+6. **The naive memory subtotals are arithmetic, not measurements.** We did not instrument a
+   naive per-voxel implementation. The coefficient tensor a naive implementation *would*
+   need (1.29 GiB) and its optimiser state (3.88 GiB) are tensor-size arithmetic. What is
+   measured is this implementation's own peak on the same case (3.25 GiB) and the card's
+   capacity (7.96 GiB); the conclusion that a naive version would not fit follows from
+   those measurements plus the arithmetic.
+7. **Run-to-run variability** is 6.2% (SD) unless `--cudnn-benchmark 0` is used.
 8. **Landmark phase coverage is uneven.** On CREATIS, only cases 0-2 carry expert
    landmarks at all ten phases; cases 3-5 carry them only at end-exhale (T00) and
    end-inhale (T50). Requiring a phase that does not exist raises an error rather than

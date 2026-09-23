@@ -61,7 +61,7 @@ output coordinate, not on the channel index `k`.
 
 The implementation consequence is that 24 channels are reduced to 3 **on the coarse grid**,
 and only a 3-channel field is upsampled. For a 1 mm DIR-Lab volume the coefficient tensor
-is 2.7 MB rather than 1387 MB (≈510×), and the upsampling temporaries shrink 8×.
+is **2.55 MiB rather than 1.29 GiB** (**519×**), and the upsampling temporaries shrink 8×.
 
 ## Optimisation
 
@@ -90,23 +90,30 @@ buried.
 
 ## Memory accounting
 
+For the 1 mm DIR-Lab case 1 (14,453,440 voxels, 24 coefficient channels at 4 bytes):
+
 | Quantity | Naive per-voxel | PMR |
 |---|---|---|
-| Coefficient field (1 mm DIR-Lab case 1) | 1.387 GB | 2.7 MB |
-| Optimiser state (Adam m, v + grad) | ≈ 5.55 GB | negligible |
+| Coefficient tensor | 1.29 GiB | **2.55 MiB** (519× smaller) |
+| Optimiser state (Adam `m`, `v` + grad) | 3.88 GiB | negligible |
+| **Subtotal** | **5.17 GiB** | ≈ 0 |
 | Upsampling temporaries | 24 channels | 3 channels |
 
-The naive total is ≳ 6.5 GB **in addition to** the image buffers every implementation needs.
-That figure is arithmetic, not a measurement: a naive implementation was not instrumented.
-See `LIMITATIONS.md`.
+This implementation's measured peak on that same case is **3.25 GiB**, against a card with
+**7.96 GiB**. A naive implementation would need ≈ **8.4 GiB** — it would not fit.
+
+The naive subtotals are arithmetic, not measurements; a naive implementation was not
+instrumented. See `LIMITATIONS.md`. All memory figures are GiB (2³⁰ bytes), matching what
+`torch.cuda.max_memory_allocated()` reports.
 
 ## Determinism
 
 `torch.backends.cudnn.benchmark` defaults to `True`, letting cuDNN choose convolution
 algorithms at runtime. On the hardest DIR-Lab case, five runs of an *identical*
 configuration gave TRE of 3.023, 3.216, 3.320, 3.354 and 3.584 mm: standard deviation
-**5.8%**, range **18.6%**. Passing `--cudnn-benchmark 0` reduces this to **0.2%**
-(1.13048 vs 1.13305 mm). Effects below ~5% are not interpretable without this control.
+**0.20 mm (6.2%)**, range **18.6%**. Passing `--cudnn-benchmark 0` reduces this to **0.2%**
+(1.13048 vs 1.13305 mm on case 1). Effects below ~5% are not interpretable without this
+control.
 
 ## Two datasets, two sets of conventions
 

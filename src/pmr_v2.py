@@ -390,11 +390,39 @@ def mind_loss(w, f_desc, m=None):
 
 
 # ==================== 训练阶段 ====================
+def apply_lr_decay(opt, lr0, it, iters, mode):
+    """按迭代进度调整学习率。
+
+    为什么加这个（机制性动机，见 `docs/38`）
+    ----------------------------------------
+    实测 `det10_w0.log` 的 loss 轨迹：case6 的 S1 在 **100 次迭代内**就从 −0.736 降到
+    −0.949，此后 700 次迭代一直在 −0.79 ~ −0.95 之间**震荡**，无下降趋势。
+    恒定 lr=1e-3 下 ±0.08 的震荡正是"步长在收敛点附近过大"的特征。
+
+    ⇒ 加长训练预算不会有帮助（**预算不是瓶颈**）；衰减步长才是对症的。
+    默认仍为 `none`，以保证历史结果可逐位复现。
+    """
+    if mode == 'none':
+        return
+    # 用 `it/(iters-1)` 归一，使**首步恰为初值、末步恰为 5%**
+    # （与 PyTorch `CosineAnnealingLR` 的端点约定一致）。
+    t = it / max(1, iters - 1)
+    if mode == 'cosine':
+        # 余弦退火到 5%（不退到 0：完全归零会让最后若干步不再更新）
+        frac = 0.05 + 0.95 * 0.5 * (1.0 + np.cos(np.pi * t))
+    elif mode == 'linear':
+        frac = 1.0 - 0.95 * t
+    else:
+        raise ValueError(f'未知 lr_decay 模式: {mode}')
+    for gp in opt.param_groups:
+        gp['lr'] = lr0 * frac
+
+
 def train_stage(net, imgs, img0, coef_in0, K, thetas, S, g, shape, iters, metric,
                 w_smooth, w_l2, lr, label, win, coords, K_a, amp, ncc_stride, down,
                 mask=None, f_stats=None, f_mind=None, phases_per_step=2, mind_w=1.0,
                 l2_phys=1.0, log_every=50, gen=None, f_ls=None, ls_weight='energy',
-                train_phases=None):
+                train_phases=None, lr_decay='none'):
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     scaler = torch.amp.GradScaler('cuda', enabled=amp)
     n_ph = len(thetas)
@@ -432,6 +460,7 @@ def train_stage(net, imgs, img0, coef_in0, K, thetas, S, g, shape, iters, metric
             loss_sum += li.detach().float().item()
             del d, w, li
         scaler.step(opt); scaler.update()
+        apply_lr_decay(opt, lr, it, iters, lr_decay)
         if (it + 1) % log_every == 0 or it == 0:
             mem = torch.cuda.max_memory_allocated() / 1024 ** 3 if device == 'cuda' else 0
             print(f'    {label}iter {it+1:5d} loss {loss_sum:+.5f} '
@@ -442,7 +471,8 @@ def train_stage(net, imgs, img0, coef_in0, K, thetas, S, g, shape, iters, metric
 def train_residual(coef_r, imgs, img0, d_base_list, thetas, S, g, KR, shape, iters,
                    metric, mask, f_stats, f_mind, win, ncc_stride, lr, mind_w,
                    phases_per_step=2, label='R  ', log_every=100, gen=None,
-                   reg_scale=1.0, jac_weight=0.0, f_ls=None, train_phases=None):
+                   reg_scale=1.0, jac_weight=0.0, f_ls=None, train_phases=None,
+                   lr_decay='none'):
     """残差阶段。
 
     🔴 注意（`docs/26` §4.1）：本阶段的正则**原先是硬编码的**，不受 `--reg-scale` 影响，
@@ -483,6 +513,7 @@ def train_residual(coef_r, imgs, img0, d_base_list, thetas, S, g, KR, shape, ite
             r = r + jac_weight * folding_penalty(
                 d_base_list[idxs[0]].detach(), coef_r, thetas[idxs[0]], KR, shape)
         r.backward(); opt.step()
+        apply_lr_decay(opt, lr, it, iters, lr_decay)
         if (it + 1) % log_every == 0:
             print(f'    {label}iter {it+1:5d} ({time.time()-t0:.0f}s)', flush=True)
 
@@ -538,6 +569,10 @@ def main():
     ap.add_argument('--iters2', type=int, default=0)
     ap.add_argument('--res-iters', type=int, default=400)
     ap.add_argument('--lr', type=float, default=0.0)
+    ap.add_argument('--lr-decay', choices=['none', 'cosine', 'linear'], default='none',
+                    help='阶段内学习率调度。实测 loss 在约 100 次迭代后即进入 ±0.08 的'
+                         '震荡平台（见 docs/38），恒定步长过大 ⇒ 加余弦退火可让模型收敛。'
+                         '默认 none 以保证历史结果可逐位复现。')
     ap.add_argument('--phases-per-step', type=int, default=2)
     ap.add_argument('--affine-first-iters', type=int, default=0)
     ap.add_argument('--affine', type=int, default=1)
@@ -680,13 +715,13 @@ def main():
                 ws, wl, lr1, 'S1 ', win, coords, K_a, amp, ncc_stride, 8, mask=mask,
                 f_stats=f_stats, f_mind=f_mind, phases_per_step=args.phases_per_step,
                 mind_w=args.mind_weight, l2_phys=l2_phys, gen=gen, f_ls=f_ls,
-                train_phases=train_phases)
+                train_phases=train_phases, lr_decay=args.lr_decay)
     print(f'  阶段2（{args.metric} 精调）: {iters2} iter', flush=True)
     train_stage(net, imgs, img0, coef_in0, K, thetas, S, g, shape, iters2, args.metric,
                 ws2, wl2_, lr1 * 0.3, 'S2 ', win, coords, K_a, amp, ncc_stride, 8, mask=mask,
                 f_stats=f_stats, f_mind=f_mind, phases_per_step=args.phases_per_step,
                 mind_w=args.mind_weight, l2_phys=l2_phys, gen=gen, f_ls=f_ls,
-                train_phases=train_phases)
+                train_phases=train_phases, lr_decay=args.lr_decay)
 
     with torch.no_grad():
         coef_c, aff = net(coef_in0)
@@ -712,7 +747,7 @@ def main():
                    ncc_stride, 1e-2, args.mind_weight,
                    phases_per_step=args.phases_per_step, gen=gen,
                    reg_scale=args.res_reg_scale, jac_weight=args.jac_weight, f_ls=f_ls,
-                   train_phases=train_phases)
+                   train_phases=train_phases, lr_decay=args.lr_decay)
 
     # ---- C3 整合：逐相位 NRMS（留出相位 vs 训练相位）----
     # 这正是地震「检测门槛」在我们这里的可执行形式：不需要重复采集，
@@ -776,9 +811,17 @@ def main():
     tre_t = float(np.linalg.norm(lm0 + sample_trilinear(d_t, lm0, spacing) - lm5, axis=1).mean())
 
     res = {'impl': 'pmr_v2', 'dataset': args.dataset, 'case': cn, 'caseid': caseid,
+           # 🔴 元数据（2026-09-23 新增）：此前**没有记录 cudnn benchmark 的实际取值**，
+           #    导致事后**无法从结果文件判断某次运行是否为确定性口径**。
+           #    本项目的唯一报告口径是 cudnn_benchmark=False（`--cudnn-benchmark 0`）。
+           'cudnn_benchmark': bool(torch.backends.cudnn.benchmark),
+           'deterministic_protocol': (not bool(torch.backends.cudnn.benchmark)),
+           'seed': args.seed,
+           'device': ('cuda:' + torch.cuda.get_device_name(0)) if device == 'cuda' else 'cpu',
            'down_mm': down, 'mask': args.mask, 'metric': args.metric,
            'res_metric': args.res_metric, 'norm': args.norm, 'reg_scale': args.reg_scale,
            'iters1': iters1, 'iters2': iters2, 'res_iters': args.res_iters, 'lr1': lr1,
+           'lr_decay': args.lr_decay,
            'phases_per_step': args.phases_per_step, 'enc_down': args.enc_down,
            'res_down': res_down, 'win': win, 'ncc_stride': ncc_stride, 'K': K,
            'local_mask_mode': LOCAL_MASK_MODE, 'affine_first_iters': args.affine_first_iters,

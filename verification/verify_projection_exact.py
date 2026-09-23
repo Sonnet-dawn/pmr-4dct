@@ -54,12 +54,18 @@ def design(K=4, nyquist=True, thetas=TH):
 
 
 def report(tag, M, D):
-    """D: (N, M_pts) 锚定数据（D[0] 应为 0）。返回投影残差范数。"""
+    """D: (N, M_pts) 锚定数据（D[0] 应为 0）。返回投影残差范数。
+
+    🔴 返回的是 `max|D − M pinv(M) D|` —— **逐元素绝对残差在全部 (N × n_pts) 个条目上的最大值**，
+    **不是**归一化残差、也不是范数。因此它**可以 > 1**（对标准正态的随机数据，
+    20000 个条目的最大值约 1.3）。稿件中引用该数时必须写明这一定义，否则读者会
+    误以为它是"投影算子对单位向量的残差"（那个上界才是 1）。
+    """
     P = np.linalg.pinv(M)
     Drec = M @ (P @ D)
     r = np.abs(D - Drec)
     print(f'  {tag:<38} rank={np.linalg.matrix_rank(M)}  cond={np.linalg.cond(M):8.3f}  '
-          f'最大投影残差={r.max():.3e}  相对={r.max()/max(np.abs(D).max(),1e-30):.3e}')
+          f'max|逐元素残差|={r.max():.3e}  相对={r.max()/max(np.abs(D).max(),1e-30):.3e}')
     return r.max()
 
 
@@ -101,19 +107,31 @@ print()
 print('=' * 90)
 print('四、8 项丢掉的到底是什么？—— Nyquist 模态')
 print('=' * 90)
+print('  ⚠️ 必须区分两件**不同**的东西（早先稿件把二者混为一谈，见 docs/33）：')
+print('     (A) **缺失方向 m** —— 锚定空间（v_0=0, 9 维）里未被 8 项基张成的那 1 维。')
+print('         它就是"参考相位处为 0、之后交替"的向量：m ∝ (0, 1, −1, 1, −1, …)。')
+print('     (B) **补偿向量 cos5θ−1** —— 一个**可选**的补齐项，**不等于** m；')
+print('         它在 m 方向上有非零投影，所以加它能把秩补满。')
+print('         注意 cos5θ−1 = (0,−2,0,−2,…) 与锚定交替向量夹角余弦仅 0.7071。')
+print('     下面测的是 (A)：残差的主方向是否就是锚定交替向量。')
 # 8 项基的零空间在 {v_0=0} 中的补方向
 M8 = design(4, False)
 res8 = D - M8 @ (np.linalg.pinv(M8) @ D)
-# 对残差做主成分，看它与"交替模态"的关系
+# 对残差做主成分，看它与"锚定后的交替模态"的关系
 u, s, vt = np.linalg.svd(res8 - res8.mean(axis=1, keepdims=True), full_matrices=False)
-alt = np.array([(-1.0) ** i for i in range(N)]); alt[0] = 0.0
+alt = np.array([(-1.0) ** i for i in range(N)]); alt[0] = 0.0   # ← 置零即锚定，得到 (A)
 alt = alt / np.linalg.norm(alt)
 v1 = u[:, 0]                                  # 左奇异向量，长度 N（=相位数）
 v1 = v1 / np.linalg.norm(v1)
-print(f'  8 项残差的第 1 主方向与交替模态 (-1)^i 的 |内积| = {abs(float(v1 @ alt)):.6f}')
-print(f'  (接近 1 表示 8 项丢掉的正是 Nyquist / 交替模态)')
+print(f'  (A) 残差第 1 主方向 与 **锚定交替向量** (0,±1,∓1,…) 的 |内积| = '
+      f'{abs(float(v1 @ alt)):.6f}')
+_nq = np.cos(5 * TH) - 1.0
+_a0 = np.array([(-1.0) ** i for i in range(N)]); _a0 = _a0 / np.linalg.norm(_a0)
+print(f'  (B) 补偿向量 cos5θ−1 与**未锚定**的 (−1)^i 的夹角余弦 = '
+      f'{abs(float(_nq @ _a0)) / np.linalg.norm(_nq):.6f}   ← = 1/√2，**不是 1**')
 print(f'  8 项残差占数据能量比例 = {np.linalg.norm(res8)/np.linalg.norm(D)*100:.2f}%')
-print(f'  (该比例对**随机**数据成立；真实呼吸轨迹平滑，Nyquist 分量远小于此)')
+print(f'  (该比例对**随机**数据成立；真实呼吸轨迹平滑，Nyquist 分量远小于此 ——')
+print(f'   真实数据上的实测见 tools/nyquist_content_real.py：8 项残差 0.24–0.32 mm)')
 
 print()
 print('=' * 90)

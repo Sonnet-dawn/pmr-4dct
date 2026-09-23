@@ -109,7 +109,14 @@ def main():
     ap.add_argument('--workers', type=int, default=3)
     ap.add_argument('--tag', type=str, default='screen')
     ap.add_argument('--gpu-gb', type=float, default=8.0, help='显存预算，用于自动限制并发')
+    ap.add_argument('--extra', type=str, default='',
+                    help='附加参数（空格分隔），追加在变体参数**之后**，优先级最高。'
+                         '用于不改动 VARIANTS 表的单变量实验，例如：'
+                         '--extra "--lr-decay cosine"')
     args = ap.parse_args()
+    extra = args.extra.split()
+    if extra:
+        print(f'[extra] 附加参数（优先级最高）: {extra}', flush=True)
     cases = [int(c) for c in args.cases.split(',') if c.strip()]
     vs = [v.strip() for v in args.variants.split(',') if v.strip()]
     bad = [v for v in vs if v not in VARIANTS]
@@ -144,6 +151,9 @@ def main():
             fh.write(f'OUTD = r"{OUTD}"\n')
             fh.write(f'TAG = r"{args.tag}"\n')
             fh.write(f'NEED_GB = {2.8 if any(c >= 6 for c in cases) else 1.0}\n')
+            # EXTRA：附加参数，**放在变体参数之后**，因此优先级最高。
+            # 用途：不改动 VARIANTS 表就能做单变量实验（如 --lr-decay cosine，见 docs/38）。
+            fh.write(f'EXTRA = {extra!r}\n')
             # ---- 运行时显存看门狗：可用显存不足则等待，绝不硬闯 ----
             fh.write('def gpu_free_gb():\n')
             fh.write('    try:\n')
@@ -167,6 +177,7 @@ def main():
             fh.write('           "--down", "2", "--tag", f"{TAG}_{v}", "--out", OUTD]\n')
             fh.write(f'    cmd += {BUDGET!r}\n')
             fh.write('    cmd += VAR[v]          # 变体参数放在最后，可覆盖预算项\n')
+            fh.write('    cmd += EXTRA           # 附加参数优先级最高\n')
             fh.write('    print("RUN", v, cn, flush=True)\n')
             fh.write('    if not wait_gpu(NEED_GB):\n')
             fh.write('        print("  [gpu-watch] 等待超时，跳过本任务", flush=True); continue\n')
