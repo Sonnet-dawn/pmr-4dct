@@ -910,6 +910,12 @@ def main():
            'iters1': iters1, 'iters2': iters2, 'res_iters': args.res_iters, 'lr1': lr1,
            'lr_decay': args.lr_decay,
            'phases_per_step': args.phases_per_step, 'enc_down': args.enc_down,
+           # 🔴 跨分辨率热启动必须记录（2026-09-24 补）：`--init-coef` 是**多尺度消融里
+           #    唯一变化的那个变量**，但它此前不进结果 JSON ⇒
+           #    `tools/audit_ablations.py` 会把"热启动 vs 不热启动"看成
+           #    "同一配置的重复运行"。只记 **basename**，避免把本机绝对路径写进结果。
+           'init_coef': (os.path.basename(args.init_coef) if args.init_coef else None),
+           'init_coef_mm': (args.init_coef_mm if args.init_coef else None),
            'res_down': res_down, 'win': win, 'ncc_stride': ncc_stride, 'K': K,
            'local_mask_mode': LOCAL_MASK_MODE, 'affine_first_iters': args.affine_first_iters,
            'res_reg_scale': args.res_reg_scale, 'jac_weight': args.jac_weight,

@@ -54,6 +54,8 @@ SUITE = [
      900, 'TRE 约定 + transformix 点文件单位/量化（解析已知答案的合成变换）'),
     ('phase_selection', 'convention', 'verify_phase_selection.py', [],
      300, '相位参数与 landmark 集的一致性（300 点集无中间相位 ⇒ 必须报错，不许静默）'),
+    ('dl_model_shapes', 'geometry', 'verify_lapirn_shapes.py', [],
+     300, 'DL 基线两个模型的前向形状（lapirn 多级金字塔曾整批静默失败）'),
     ('main_run', 'data', 'verify_main_run.py', ['main_base'],
      600, '主运行结果自洽：闭合恒等式、与 identity 的比较'),
     ('coarse_tre', 'data', 'verify_coarse_tre.py', [],

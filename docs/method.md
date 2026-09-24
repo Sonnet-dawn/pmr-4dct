@@ -116,9 +116,15 @@ algorithms at runtime. On the hardest DIR-Lab case, five runs of an *identical*
 configuration gave TRE of 3.023, 3.216, 3.320, 3.354 and 3.584 mm: standard deviation
 **0.20 mm (6.2% of the mean)**, range **0.56 mm (17.0% of the mean)**. (Relative to the
 lowest of the five the range is 18.6%; we quote it against the mean so that it uses the
-same basis as the standard deviation.) Passing `--cudnn-benchmark 0` reduces this to **0.2%**
-(1.13048 vs 1.13305 mm on case 1). Effects below ~5% are not interpretable without this
-control.
+same basis as the standard deviation.) Effects below ~5% are not interpretable without
+this control.
+
+Passing `--cudnn-benchmark 0` removes most of the spread but not all of it, and the
+remainder depends on the case. Two complete runs of an identical configuration with the
+flag off — every hyper-parameter equal, `benchmark = False` in both logs — differed by
+**0.5–1.6%** on the nine easier cases and by **5.3%** and **5.4%** on the two hardest,
+while the ten-case mean moved by only **0.47%**. The flag stabilises the aggregate; it
+does not make the hardest single cases reproducible.
 
 ## Two datasets, two sets of conventions
 

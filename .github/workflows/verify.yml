@@ -23,4 +23,4 @@ jobs:
       # The full suite (including the data-dependent checks) is run locally; see
       # docs/verification.md.
       - name: Verification suite (data-free subset)
-        run: python run_verification_suite.py --only exact_basis,projection_exact,tre_convention,phase_selection
+        run: python run_verification_suite.py --only exact_basis,projection_exact,tre_convention,phase_selection,dl_model_shapes

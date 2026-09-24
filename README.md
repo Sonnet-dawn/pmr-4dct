@@ -8,8 +8,8 @@ Memory-scalable deformable registration of 4D-CT, targeting consumer GPUs.
   memory, on an 8 GiB laptop card.
 * Exact **loop closure** by construction: `d(x,0) = d(x,2π) = 0` is an algebraic
   identity, not a penalty.
-* A verification suite that runs with every training job — and that has caught **twelve**
-  documented defects in this codebase, **ten** of which were completely silent
+* A verification suite that runs with every training job — and that has caught **thirteen**
+  documented defects in this codebase, **eleven** of which were completely silent
   (`docs/verification.md`).
 
 > The CI badge covers the **data-free** subset of the suite only: the DIR-Lab and CREATIS
@@ -89,7 +89,7 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 | `--mask {none,t00,union}` | `union` | Spatial support of the similarity. On DIR-Lab, whole-image support biases the solution toward small displacement; against the matched control (`--res-reg-scale 1`), the 10-case mean TRE goes from 2.335 mm without a mask to 1.692 mm with one (**+27.6%**, nine of ten cases). |
 | `--norm {robust,minmax}` | `robust` | `robust` clips to the 0.5–99.5 percentile. The DIR-Lab volumes contain isolated values near 13 400 against a background near 1 000; min–max scaling compresses lung contrast and costs **+63.3%** TRE (all ten cases worse). |
 | `--res-reg-scale` | 1.0 | Scale of the **residual-stage** penalty. The global `--reg-scale` does **not** reach this stage. Setting it to 10 reduces folding by **17–57×** and improves TRE by ~5.6%. |
-| `--cudnn-benchmark {0,1}` | (upstream `True`) | Pass **0** for reproducibility. With the upstream default, an identical configuration varies by **6.2% (SD)** run to run; with 0 it is **0.2%**. |
+| `--cudnn-benchmark {0,1}` | (upstream `True`) | Pass **0** for reproducibility. With the upstream default an identical configuration varies by **6.2% (SD)** run to run; with 0 the ten-case mean is stable to **0.47%**, though the hardest single cases still move by **~5%**. See the warning below. |
 | `--metric {global,local,mind,ls,lsg}` | `local` | `ls`/`lsg` replace box-window local NCC with a **shaping-regularised Gaussian** window (`σ = win/√12`, so the kernel has the same second moment as the box it replaces). `ls` additionally weights each window by the reference's local structural significance. |
 | `--holdout-phases` | (none) | Comma-separated phase indices excluded from training, used to measure how well the periodic phase model predicts a phase it has never seen. |
 | `--tre-phases` | (none) | Extra target phases (0–5 = T00…T50) to report TRE for, written to a `tre_by_phase` block. Because the 300-point DIR-Lab set covers **only T00 and T50**, intermediate phases require `--lm-set 4d75`; asking for them with the 300-point set **raises** rather than silently evaluating the wrong points. |
@@ -104,8 +104,16 @@ memory, wall-clock time and the closure residuals, so any reported number is tra
 `torch.backends.cudnn.benchmark = True` (the upstream default) makes algorithm
 selection non-deterministic. Across five runs of an *identical* configuration on the
 hardest DIR-Lab case we measured a standard deviation of **6.2% of the mean** and a
-range of **17.0% of the mean** (0.56 mm). Pass `--cudnn-benchmark 0` to reduce this to
-**0.2%**. **Effects below ~5% are not interpretable without this control.**
+range of **17.0% of the mean** (0.56 mm). **Effects below ~5% are not interpretable
+without this control.**
+
+Pass `--cudnn-benchmark 0` to remove most of that spread — but not all of it, and not
+uniformly. Two complete runs of an identical configuration with the flag off (every
+hyper-parameter equal, `benchmark = False` in both logs) differed by **0.5–1.6%** on the
+nine easier cases and by **5.3%** / **5.4%** on the two hardest, while the ten-case mean
+moved by only **0.47%**. So the flag stabilises an aggregate number to about half a
+percent; it does not make the hardest single cases reproducible. Every run writes the
+flag's actual value and the seed into its result file.
 
 > All memory figures in this repository are **GiB** (2³⁰ bytes), matching what
 > `torch.cuda.max_memory_allocated()` reports.
@@ -134,14 +142,18 @@ Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1`.
 
 ## Verification
 
-The suite is not decoration: **it has caught seven real defects in this codebase**, listed
-in `docs/verification.md`. Two of them were silent — they produced plausible-looking output
+The suite is not decoration: **it has caught thirteen real defects in this codebase**, listed
+in `docs/verification.md`. Eleven of them were silent — they produced plausible-looking output
 while corrupting the result. Run it before trusting any number.
 
 | Command | Checks |
 |---|---|
+| `python run_verification_suite.py --quick` | Every data-free check, one entry point (this is what CI runs) |
 | `python verification/verify_exact_basis.py` | How many temporal basis functions are required (9, not 8) |
 | `python verification/verify_projection_exact.py` | The 9-term periodic basis spans anchored 10-phase data exactly |
+| `python verification/verify_tre_convention.py` | The TRE convention and the point-file units, against analytic known answers |
+| `python verification/verify_phase_selection.py` | Phase/landmark-set consistency (asking for intermediate phases with the two-phase landmark set **raises**) |
+| `python verification/verify_lapirn_shapes.py` | The two baseline networks' forward shapes, at every pyramid level |
 | `python verification/jacobian_stats.py --selftest` | Analytic Jacobian self-test (scaling / shear / fold) |
 | `python verification/verify_resample_geometry.py` | **Down-sampling preserves origin/direction and keeps the mask voxel-aligned** (the defect that silently corrupted the second dataset) |
 | `python verification/probe_hu.py` | Intensity calibration of the input volumes |
