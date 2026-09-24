@@ -135,6 +135,8 @@ ax2.text(0.10, 1.55, 'exact: trilinear interpolation is linear in its input,\n'
          fontsize=7.2, color='0.28', linespacing=1.4)
 ax2.text(0.10, 0.75, 'coefficient tensor:  1.29 GiB  →  2.55 MiB   (519×)',
          fontsize=7.6, color='#2e7d32')
+ax2.text(0.10, 0.42, '[derived: tensor-size arithmetic, not a measured allocation]',
+         fontsize=6.4, color='0.35', style='italic')
 
 # ============================================================ 版面自检
 fig.canvas.draw()
