@@ -20,7 +20,9 @@ jobs:
           pip install -r requirements.txt
       # Only the data-free checks run here: the DIR-Lab and CREATIS volumes are
       # not redistributable, so any check that needs them would fail on CI.
-      # The full suite (including the data-dependent checks) is run locally; see
-      # docs/verification.md.
+      # This list must stay identical to `run_verification_suite.py --quick`:
+      # `resample_geometry` was missing here while the README described CI as
+      # "the data-free subset" — and it is the regression test for the dropped-
+      # origin defect, i.e. the one geometry guard the paper leans on.
       - name: Verification suite (data-free subset)
-        run: python run_verification_suite.py --only exact_basis,projection_exact,tre_convention,phase_selection,dl_model_shapes
+        run: python run_verification_suite.py --only exact_basis,projection_exact,resample_geometry,tre_convention,phase_selection,dl_model_shapes

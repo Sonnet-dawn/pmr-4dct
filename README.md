@@ -128,13 +128,18 @@ volume (14.45 M voxels), with the control grid set explicitly:
 |---:|---:|---:|---:|---|
 | **8 mm** (elastix default) | 38,148 | **0.92 GiB** | 39 s | completed |
 | 4 mm | 261,950 | **5.63 GiB** (6.1×) | 352 s | completed |
-| 2 mm | — | **7.54 GiB** and rising | 5 s | **ran out of memory** |
-| 1 mm | — | **8.51 GiB** and rising | 6 s | **ran out of memory** |
+| 2 mm | — | **7.54 GiB** and rising | 5 s | **stopped by our watchdog** (available RAM exhausted) |
+| 1 mm | — | **8.51 GiB** and rising | 6 s | **stopped by our watchdog** (available RAM exhausted) |
 
-The control-point count grows as `1/g³` and the memory follows. Two caveats: the
-out-of-memory cases were terminated by *our* watchdog (the figures are lower bounds, not
-elastix's own reported failure), and the machine had only ~9–10 GiB free at the time.
-Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1`.
+The control-point count grows as `1/g³` and the memory follows. Two caveats, both stated
+because they bound what the table shows: the 2 mm and 1 mm runs were terminated by **our own
+monitoring process** when available RAM fell below its floor — elastix itself printed no
+out-of-memory error — so those two figures are **lower bounds on the requirement** (the
+allocation was still growing), not measurements of it; and the machine had only ~9–10 GiB free
+at the time.
+Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1` (the script is in the
+`drivers/` directory of this repository and needs the DIR-Lab volumes; it checks available RAM
+before starting and aborts rather than pushing the machine into swap).
 
 > ⚠️ This is **not** a like-for-like benchmark. elastix performs one *pairwise* registration;
 > this package trains a continuous model over **all ten phases**. No ratio between the two
@@ -148,16 +153,17 @@ while corrupting the result. Run it before trusting any number.
 
 | Command | Checks |
 |---|---|
-| `python run_verification_suite.py --quick` | Every data-free check, one entry point (this is what CI runs) |
+| `python run_verification_suite.py` | Everything, one entry point. From a fresh clone this exits 0 with **6 checks executed, 8 explicitly skipped, 1 partially executed** — the skipped ones need result files that this repository does not ship, and they print `SUITE-SKIP:` rather than passing silently |
+| `python run_verification_suite.py --quick` | The data-free subset (this is what CI runs): 6/6 |
 | `python verification/verify_exact_basis.py` | How many temporal basis functions are required (9, not 8) |
 | `python verification/verify_projection_exact.py` | The 9-term periodic basis spans anchored 10-phase data exactly |
 | `python verification/verify_tre_convention.py` | The TRE convention and the point-file units, against analytic known answers |
 | `python verification/verify_phase_selection.py` | Phase/landmark-set consistency (asking for intermediate phases with the two-phase landmark set **raises**) |
 | `python verification/verify_lapirn_shapes.py` | The two baseline networks' forward shapes, at every pyramid level |
-| `python verification/jacobian_stats.py --selftest` | Analytic Jacobian self-test (scaling / shear / fold) |
-| `python verification/verify_resample_geometry.py` | **Down-sampling preserves origin/direction and keeps the mask voxel-aligned** (the defect that silently corrupted the second dataset) |
+| `python src/jacobian_stats.py --selftest` | Analytic Jacobian self-test (scaling / shear / fold) |
+| `python verification/verify_resample_geometry.py` | **Down-sampling preserves origin/direction and keeps the mask voxel-aligned** (the defect that silently corrupted the second dataset). Contains a **synthetic** case with a non-zero origin, so it runs without any dataset — that is the condition under which the defect is visible at all |
 | `python verification/probe_hu.py` | Intensity calibration of the input volumes |
-| `python verification/verify_main_run.py <tag>` | Per-case self-consistency of a result set |
+| `python verification/verify_main_run.py <tag>` | Per-case self-consistency of a result set (needs `results/`; prints `SUITE-SKIP:` without it) |
 
 ### Why the second dataset is itself a test
 
@@ -187,13 +193,24 @@ revision stays retrievable even if this repository moves or disappears:
 
 | | |
 |---|---|
-| **DOI (cite this)** | **[10.5281/zenodo.22899963](https://doi.org/10.5281/zenodo.22899963)** |
+| **DOI (cite this)** | **[10.5281/zenodo.22899962](https://doi.org/10.5281/zenodo.22899962)** (concept DOI: always resolves to the latest **archived** release) |
 | Repository | https://github.com/Sonnet-dawn/pmr-4dct |
-| Release v1.0.2 | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.2 |
-| Zenodo record | https://zenodo.org/record/22899963 |
+| This version | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.5 |
 | SWH snapshot | `swh:1:snp:2871fbfe6e030ec739c82f1c5bdb3c855155fdf1` |
-| SWH revision (v1.0.2) | `swh:1:rev:9770ffc7ee5fd7fe6e0f45ae01b318850108892c` |
-| SWH revision (v1.0.0) | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
+
+**Which version the DOI actually resolves to, stated plainly**, because "concept DOI" hides
+this and it matters when you are trying to check a submitted paper against archived code:
+
+| Version | GitHub Release | Archived on Zenodo? | Software Heritage revision |
+|---|---|---|---|
+| **v1.0.5** | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.5) | see the Zenodo record — the integration archived v1.0.2 and did **not** archive v1.0.3 or v1.0.4, a discrepancy we could not resolve from outside Zenodo | retrieve by the tag against the snapshot above |
+| v1.0.4 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.4) | **no** | — |
+| v1.0.3 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.3) | **no** | — |
+| v1.0.2 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.2) | **yes** — version DOI `10.5281/zenodo.22899963` | `swh:1:rev:9770ffc7ee5fd7fe6e0f45ae01b318850108892c` |
+| v1.0.0 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.0) | **no** | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
+
+If you need the code of *this* version and the DOI resolves to an older archive, use the
+release tag or the Software Heritage revision — that is exactly why both are listed.
 
 The source is archived in two independent places: **Zenodo** (with a DOI) and
 **Software Heritage** (long-term code archive, DOI-independent).

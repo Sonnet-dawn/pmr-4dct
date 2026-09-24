@@ -2,8 +2,13 @@
 
 1. **No accuracy-SOTA claim.** On DIR-Lab (10 cases, standard protocol) this
    implementation reaches 1.597 mm mean TRE. Published results reach 1.0-1.3 mm.
-2. **Not diffeomorphic.** 0.009%-0.003% of voxels have `det(J) <= 0` depending on the
-   case (minimum `det(J) = -1.79` on the hardest case).
+2. **Not diffeomorphic.** In the reported configuration (`--res-reg-scale 10`), the mean over
+   the ten phases of the intra-pulmonary non-positive `det(J)` fraction is
+   **0.0006% (case 1) to 0.084% (case 8)**, with the worst voxel reaching
+   `det(J) = -1.79` on the hardest case. Both figures are per case and per the ten-phase
+   mean, from `results/folding_v2_resreg10_case*.json`; the older, under-regularised
+   configuration folded up to **1.7%** on case 8, which is why the residual-stage scale is
+   documented rather than left at its default.
 3. **1 mm is only feasible for smaller volumes.** The large DIR-Lab cases (6-10) have
    ~79 million voxels per phase at 1 mm, requiring roughly 20 GiB; this does not fit on
    an 8 GiB card. The 1 mm results cover cases 1-5 only. The CREATIS volumes are larger

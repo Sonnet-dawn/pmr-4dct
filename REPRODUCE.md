@@ -1,152 +1,148 @@
-# Paper B · 复现手册
+# Reproducing every number in the paper
 
-> 目标：**每一个进入稿件的数字，都能在本文件里找到产生它的确切命令与输出文件。**
-> 所有命令的工作目录为项目根目录（含 `pmr_v2.py` 的那一层）。
-> Python 解释器：`python`（torch 2.8.0+cu128 / SimpleITK / scipy）。
-
----
-
-## 0. 环境
-
-```powershell
-python -c "import torch, SimpleITK, scipy, numpy; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0))"
-```
-
-实测环境：RTX 5060 Laptop **8 GB**、24 核、31 GB RAM、Windows。
+> **Scope.** This file maps each reported number to the command and the script that produces
+> it. It is written for a reader who has cloned the repository and wants to check the paper
+> rather than take it on trust.
+>
+> **What you can run immediately, and what needs the data.** Six of the fourteen verification
+> checks need nothing but Python. Everything else needs either the two public datasets or the
+> result files, and **the result files are not redistributed** — they are large, and the
+> drivers that produce them are here instead. A check that cannot run prints `SUITE-SKIP:` and
+> is counted as *skipped*, never as passed.
 
 ---
 
-## 1. 数据前提
+## 0. Environment
 
-DIRLAB 放在 `../reference_4/data/DIRLAB/`，结构：
-
-```
-mha/case{1..10}/case{n}_T{p}0_R.mha          p = 0..9
-points/case{n}/case{n}_300_T00_xyz_R.txt
-points/case{n}/case{n}_300_T50_xyz_R.txt
+```bash
+python -c "import torch, SimpleITK, numpy, scipy, psutil, matplotlib; print(torch.__version__, torch.cuda.is_available())"
 ```
 
-**协议核实**（Paper B 表 B5 的来源）：
+Tested on Python 3.10 with the versions pinned in `requirements.txt`; the reported numbers come
+from a single **RTX 5060 Laptop GPU with 8 GB (7.96 GiB usable)**, 24 CPU cores and 31.4 GiB of
+RAM, on Windows. Memory figures are GiB (2³⁰ bytes), matching what
+`torch.cuda.max_memory_allocated()` reports.
 
-```powershell
-python probe_hu.py            # -> HU = 存储值 − 1024；体素 1 mm 各向同性；FOV 14.5–84.0 L
-python check_mask_volume.py   # -> 肺体积 2459–5884 mL
-python verify_identity_tre.py # -> identity TRE 10 例均值 8.461 mm（与已发表初始误差一致）
-```
+## 1. Data
 
----
+Neither dataset is redistributed; both are public and free for research use.
 
-## 2. 表 B1 · 2 mm 显存/耗时
-
-```powershell
-python peek_pmr.py            # 直接打印 results/fast_phase2/*_2mm.json 的关键字段
-```
-来源文件：`results/fast_phase2/s1f_dirlab_case{1..10}_2mm.json`（字段 `peak_mem_gb`、`time_s`、`n_vox`）。
-
-**异质性审计**（必须一起跑，用于在稿件里声明这批数据的适用范围）：
-
-```powershell
-python audit_pmr_results.py
-```
-预期输出：`cases: [6, 7, 8, 9, 10]` —— 这 5 例缺少 `coef_scale`/`l2_phys`/`K` 字段，
-来自早一版实现。**因此表 B1 只用于规模/显存趋势，不用于最终精度表。**
-
----
-
-## 3. 表 B2 · 1 mm 探针
-
-```powershell
-python pmr_fast.py --dataset dirlab --case 1 --max-down 1 --enc-down 8 `
-    --iters1 800 --iters2 800 --res-iters 200 --tag probe1mm_ws8 `
-    --out results\probe_1mm --save-dvf 0
-```
-来源：`results/probe_1mm/probe1mm_ws8_dirlab_case1_1mm.json`
-（`peak_mem_gb = 2.4`、`n_vox = 14453440`、`time_s = 1417.6`）。
-
-对照（`enc_down=4`）：`probe1mm_ws_dirlab_case1_1mm.json`。
-
-> ⚠️ 1 mm 下 `--save-dvf 1` 会写出 1.65 GB/例，务必显式给 `--save-dvf 0`。
-
----
-
-## 4. 表 B3 · 粗网格等价性验证
-
-```powershell
-python verify_exact_basis.py         # 时间基完备性：8 函数残差 0.928 / 9 函数残差 8.9e-16, cond 3.35
-python jacobian_stats.py --selftest  # 解析 Jacobian 自检 -> PASS
-```
-前向一致性对照在 `results/fast_validate/`。
-
----
-
-## 5. 表 B4 · 验证套件
-
-```powershell
-python jacobian_stats.py --selftest     # 期望: "Jacobian self-test: PASS"
-python verify_exact_basis.py            # 期望: 9x9 矩阵 rank 9, cond 3.35, 残差 8.9e-16
-python lung_mask.py                     # 期望: 10 例肺占比，含绝对体积
-python check_mask_volume.py             # 期望: 均值 3852 mL
-```
-
-闭合断言是**每次训练自动执行**的，无需单独命令；看运行输出末行：
-
-```
-闭合: |d(0)|max=0.00e+00  |d(2π)-d(0)|max=6.46e-07 mm
-```
-
----
-
-## 6. 掩膜机制的诊断证据（表 B4 / `04_claims_and_evidence.md` B-16、B-17）
-
-```powershell
-# 6.1 成对配准的收敛解是小位移解（loss 改善而 |d| 下降）
-python diag_pairwise.py --cases 1 --down 2 --variants base
-
-# 6.2 掩膜假设的跨例验证（本包与 Paper A 共用的关键证据）
-python test_mask_hypothesis.py --cases 2,3,4,5,6,7,8,9,10 --iters 1200
-```
-输出：`results/diag_pairwise/mask_hypothesis.json`、`results/diag_pairwise/*.json`。
-
----
-
-## 7. v2 变体筛选
-
-```powershell
-# 第一轮：13 个变体 × 3 例（1 易 / 5 中 / 8 难）
-python run_v2_sweep.py --cases 1,5,8 --workers 3 --tag screen
-# 重新汇总（不重跑）
-python run_v2_sweep.py --cases 1 --workers 1 --tag screen --variants base
-```
-输出：`results/pmr_v2/screen_<变体>_case<n>_2mm.json`；日志 `results/pmr_v2/logs/screen_w*.log`。
-
----
-
-## 8. 单例端到端（论文第 5 节 Illustrative examples）
-
-```powershell
-python pmr_v2.py --case 1 --down 2 --mask union --metric local --tag demo
-python pmr_v2.py --case 8 --down 2 --mask union --metric local --phases-per-step 2 --tag demo
-python pmr_v2.py --case 1 --down 1 --mask union --metric local --enc-down 8 --tag demo1mm
-```
-
----
-
-## 9. 重建全部表格
-
-```powershell
-python make_all_tables.py     # -> results/TABLES.md（含自动审计）
-python survey_results.py      # 清点 results/ 可用数据
-python paperB_gather.py       # Paper B 数据抽取
-```
-
----
-
-## 10. FAILED / 已废弃的命令（不要重复尝试）
-
-| 命令 | 现象 | 原因 |
+| Dataset | Where to get it | What it provides |
 |---|---|---|
-| 任何用 `urllib.request` 的下载 | `SSLError: [ASN1: NOT_ENOUGH_DATA]` | 本机系统证书库损坏；**一律改用 `requests`** |
-| 含中文的 `.ps1`（非 BOM UTF-8） | `Unexpected token '}'` | PowerShell 5.1 编码问题；**改写成 `.py`** |
-| 硬编码旧盘符（如 `<OLD_DRIVE>:...`）的脚本 | `The file ... does not exist` | 项目树曾换过所在盘符；已由 `fix_stale_paths.py` 修正 |
-| `--save-dvf 1` @1 mm | 写出 1.65 GB | 预期行为，非错误 |
-| 把 `ct < -500` 当肺阈值 | 选中 0% 体素 | 该 `.mha` 是 **HU + 1024**；应用 `probe_hu.py` 的标定 |
+| **DIR-Lab 4D-CT** (Castillo et al., 2009) | <https://www.dir-lab.com/> — "4D CT" download page | 10 cases, 10 phases at 2.5 mm slice thickness, 300 expert landmarks at T00 and T50. The resampled 1 mm volumes used here (`case{n}_T{p}0_R.mha`) are the `_R` set distributed with the dataset |
+| **CREATIS 4D-CT** (Vandemeulebroucke et al., 2011) | <https://www.creatis.insa-lyon.fr/Challenge/Lung/4DCT/> | 6 patients, 10 phases, 100–113 landmarks; patients 1–3 annotated at all ten phases (`cr0`–`cr2` in the result files) |
+
+Point the package at them with `PMR_DATA_ROOT`; the layout the loaders expect is:
+
+```text
+$PMR_DATA_ROOT/DIRLAB/mha/case{1..10}/case{n}_T{p}0_R.mha
+$PMR_DATA_ROOT/DIRLAB/points/case{n}/..._300_T{00,50}_xyz_R.txt
+$PMR_DATA_ROOT/CREATIS/...
+```
+
+Two protocol facts that are easy to get wrong, and which the suite locks down:
+
+```bash
+python verification/probe_hu.py            # values are HU + 1024 in these .mha files
+python verification/verify_main_run.py     # identity TRE, 10 cases, mean 8.461 mm
+```
+
+## 2. The figures
+
+```bash
+python drivers/make_fig1.py     # -> paperB/figures/fig1_method.{png,pdf}   (no data needed)
+python drivers/make_fig2.py     # -> paperB/figures/fig2_memory.{png,pdf}   (needs results/)
+```
+
+`make_fig2.py` reads the elastix memory measurements and the package's own peak-allocation
+records; both are regenerated by the commands in §3 and §4 below.
+
+## 3. The elastix memory series (§3.3, Fig. 2a)
+
+```bash
+# series A: one resolution level, control grid set explicitly, 1 mm volume
+python drivers/run_elastix_memory.py --cases 1 --grids 8,6,5,4,2,1
+
+# series B: the multi-resolution sweep our own tuning used, at 2 mm
+python drivers/run_elastix_lit.py --help    # see the configs and the downsample flag
+```
+
+`run_elastix_memory.py` checks available RAM before starting, aborts rather than pushing the
+machine into swap, and records the peak of the **whole process tree** in its JSON. A run that
+was stopped is written as `aborted_low_memory` — **and its peak is a lower bound**, because the
+allocation was still growing. Do not read those rows as requirements.
+
+Reported numbers and their files: `results/elastix_memory/case1_grid*mm.json` (0.92 / 2.01 /
+3.13 / 5.63 GiB for 8 / 6 / 5 / 4 mm, and the two aborted rows at 7.54 and 8.51 GiB).
+
+## 4. The package's own memory and time (§3.1, Fig. 2b)
+
+```bash
+# 2 mm working resolution, DIR-Lab case 1 (the ablation control run)
+python src/pmr_v2.py --case 1 --down 2 --mask union --metric local --norm robust \
+    --phases-per-step 2 --enc-down 4 \
+    --iters1 800 --iters2 800 --res-iters 300 --res-reg-scale 1 \
+    --cudnn-benchmark 0 --tag det1_base
+
+# 1 mm full resolution, the run behind "3.25 GiB / 306 s"
+python src/pmr_v2.py --case 1 --down 1 --mask union --metric local --norm robust \
+    --phases-per-step 2 --enc-down 8 \
+    --iters1 800 --iters2 800 --res-iters 300 --res-reg-scale 10 \
+    --cudnn-benchmark 0 --tag v2_1mm
+```
+
+Every run writes a JSON containing the parameters it actually used, the peak allocation, the
+wall clock, the closure residuals and the target registration error. **`--cudnn-benchmark 0` is
+not optional for a reported number**: with it enabled the same configuration varies run to run
+by 6.2% (sample SD) on the hardest case, which is larger than some of the effects the paper
+discusses.
+
+## 5. The tables
+
+```bash
+python src/make_main_table.py     # the per-case accuracy table
+python src/make_all_tables.py     # every table, with an automatic consistency audit
+```
+
+Both read `results/` and need the driver runs of §6 to have been executed first.
+
+## 6. The ablation study (§3.3)
+
+```bash
+# the tuning sweep (elastix baseline)
+python drivers/run_elastix_lit.py
+
+# the mask / normalisation / residual-regularisation ablations
+python drivers/run_clean_mask_ablation.py
+python drivers/test_mask_controls.py          # the region-specificity and dilation controls
+
+# the learned baselines (leave-one-out, same protocol)
+python drivers/run_dl_baselines.py --help
+```
+
+## 7. Verification
+
+```bash
+python run_verification_suite.py            # everything; 6 execute, 8 skip, 1 partially executes
+python run_verification_suite.py --quick    # the 6 data-free checks (this is what CI runs)
+```
+
+From a fresh clone the entry point exits 0 and reports the skipped checks explicitly. Each one
+is also runnable on its own, e.g.:
+
+```bash
+python verification/verify_exact_basis.py        # how many temporal basis functions (9, not 8)
+python verification/verify_projection_exact.py   # projection residual, condition number
+python verification/verify_resample_geometry.py  # geometry invariants (synthetic + data)
+python src/jacobian_stats.py --selftest          # analytic Jacobian, scaling/shear/fold
+```
+
+## 8. Commands that do **not** work here (and why)
+
+| Command | Symptom | Cause |
+|---|---|---|
+| anything based on `urllib.request` | `SSLError: [ASN1: NOT_ENOUGH_DATA]` | the system certificate store on the development machine is broken; use `requests` |
+| a `.ps1` file containing non-ASCII text | `Unexpected token '}'` | PowerShell 5.1 reads BOM-less UTF-8 as the system codepage; write `.py` instead |
+| `--save-dvf 1` at 1 mm | writes about 1.6 GB per case | expected: the field is stored at full resolution |
+| treating `ct < -500` as lung | selects 0% of voxels | these `.mha` files store **HU + 1024**; calibrate with `verification/probe_hu.py` first |
+| `python verification/jacobian_stats.py` | file not found | `jacobian_stats.py` ships in `src/`, not `verification/` |

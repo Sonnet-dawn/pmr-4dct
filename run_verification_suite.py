@@ -68,9 +68,27 @@ SUITE = [
      300, '噪声模式的运行间变异：SD/极差同分母，并扫描稿件里的口径混用'),
     ('determinism', 'data', 'tools/verify_determinism_repeats.py', [],
      600, '确定性口径的**逐例**真实波动（同配置分组 + 日志核验确定性）'),
+    ('paperA_assembly', 'data', 'tools/assemble_paperA.py', ['--stats'],
+     300, 'Paper A 分稿→完整稿件的组装自检（章节编号、内部标记、必备件）'),
+    ('paperA_xrefs', 'data', 'tools/check_xrefs.py', [],
+     300, 'Paper A 交叉引用是否都指向真实存在的节（曾查出 §4.1.2 空号 5 处）'),
 ]
 
 OK_MARK = re.compile(r'(✅|PASS|通过|一致)')
+
+# 🔴 2026-09-25 新增：**"跳过"必须与"通过"分开计数**。
+#    起因：外部审稿把仓库 clone 下来跑本入口，发现 14 项里有 **7 项**根本不在发行版里
+#    （`verify_coarse_tre.py`、`verify_lowphase.py`、`tools/verify_paperB_numbers.py`、
+#    `tools/verify_variability.py`、`tools/verify_determinism_repeats.py`、
+#    `tools/assemble_paperA.py`、`tools/check_xrefs.py`），它们报 `missing`、进程退出 1 ——
+#    而论文的中心主张正是"结果可以被你自己检查"。
+#    修法：① 能进发行版的脚本进发行版；② 需要 `results/` 历史产物的脚本在缺数据时，
+#    打印 `SUITE-SKIP:` 并**显式跳过**；③ 本入口把这种输出记为 `skip`（**不计入通过**），
+#    报告里单列 —— 否则"跳过"会被读成"检查通过"，正是本项目最忌讳的假绿（docs/44 T-8）。
+SKIP_MARK = 'SUITE-SKIP:'
+# `SUITE-PARTIAL-SKIP:`：**部分执行**。脚本里不依赖数据的那部分**真的跑了**，
+# 只有需要体数据的部分被跳过。与"整项跳过"必须区分：前者有真实结论，后者没有。
+PARTIAL_MARK = 'SUITE-PARTIAL-SKIP:'
 
 
 def resolve(script):
@@ -107,8 +125,11 @@ def run_one(key, cat, script, argv, timeout):
     if status is None:
         status = 'pass' if rc == 0 else 'fail'
     tail = [ln for ln in (out + '\n' + err).strip().splitlines() if ln.strip()][-12:]
+    partial = PARTIAL_MARK in (out + err)
+    if status == 'pass' and SKIP_MARK in (out + err):
+        status = 'skip'          # 显式跳过**不是**通过
     return {'key': key, 'script': script, 'status': status, 'rc': rc,
-            'seconds': round(dt, 1), 'tail': tail}
+            'seconds': round(dt, 1), 'tail': tail, 'partial': partial}
 
 
 def main():
@@ -142,18 +163,29 @@ def main():
         res = run_one(key, cat, script, argv, timeout)
         res.update({'category': cat, 'description': desc})
         rows.append(res)
-        icon = {'pass': '✅', 'fail': '❌', 'timeout': '⏱️', 'missing': '⚠️'}[res['status']]
-        print(f'   {icon} {res["status"].upper()}  rc={res["rc"]}  {res["seconds"]:.1f}s')
+        icon = {'pass': '✅', 'fail': '❌', 'timeout': '⏱️', 'missing': '⚠️',
+                'skip': '⏭️'}[res['status']]
+        print(f'   {icon} {res["status"].upper()}  rc={res["rc"]}  {res["seconds"]:.1f}s'
+              + ('  （部分执行：见下方 SUITE-PARTIAL-SKIP）' if res.get('partial') else ''))
         for ln in res['tail'][-6:]:
             print(f'      | {ln[:150]}')
 
     npass = sum(r['status'] == 'pass' for r in rows)
+    nskip = sum(r['status'] == 'skip' for r in rows)
+    npart = sum(bool(r.get('partial')) for r in rows)
     nfail = sum(r['status'] in ('fail', 'timeout', 'missing') for r in rows)
     print('\n' + '=' * 84)
-    print(f'结果：{npass}/{len(rows)} 通过' + (f'，{nfail} 项未通过' if nfail else ''))
+    print(f'结果：{npass}/{len(rows)} 通过'
+          + (f'，{nskip} 项**跳过**（缺数据，未执行）' if nskip else '')
+          + (f'，{npart} 项部分执行' if npart else '')
+          + (f'，{nfail} 项未通过' if nfail else ''))
     for r in rows:
         if r['status'] != 'pass':
-            print(f'  ❌ {r["key"]} ({r["status"]}, rc={r["rc"]})')
+            mark = '⏭️' if r['status'] == 'skip' else '❌'
+            print(f'  {mark} {r["key"]} ({r["status"]}, rc={r["rc"]})')
+    if nskip:
+        print('  ⚠️ "跳过"不等于"通过"：这些检查需要仓库未附带的历史结果文件；')
+        print('     在开发树（含 results/）里运行同一入口即可完整执行。')
     print('=' * 84)
 
     try:
@@ -163,7 +195,8 @@ def main():
         commit = ''
     report = {'generated_at': datetime.now().isoformat(timespec='seconds'),
               'python': PY, 'git_commit': commit,
-              'quick': args.quick, 'n_pass': npass, 'n_total': len(rows),
+              'quick': args.quick, 'n_pass': npass, 'n_skip': nskip,
+              'n_partial': npart, 'n_fail': nfail, 'n_total': len(rows),
               'tests': rows}
     os.makedirs(os.path.join(HERE, args.out), exist_ok=True)
     jf = os.path.join(HERE, args.out, 'verification_report.json')
@@ -172,10 +205,14 @@ def main():
     md = [f'# 验证套件报告', '',
           f'* 生成时间：`{report["generated_at"]}`',
           f'* git commit：`{commit or "(未取到)"}`',
-          f'* 结果：**{npass}/{len(rows)} 通过**', '',
+          f'* 结果：**{npass}/{len(rows)} 通过**'
+          + (f'、{nskip} 项跳过（缺数据，**未执行**）' if nskip else '')
+          + (f'、{npart} 项部分执行' if npart else '')
+          + (f'、{nfail} 项未通过' if nfail else ''), '',
           '| 类别 | 验证项 | 状态 | 返回码 | 耗时(s) | 说明 |',
           '|---|---|:--:|---:|---:|---|']
-    ic = {'pass': '✅ 通过', 'fail': '❌ 失败', 'timeout': '⏱️ 超时', 'missing': '⚠️ 缺失'}
+    ic = {'pass': '✅ 通过', 'fail': '❌ 失败', 'timeout': '⏱️ 超时', 'missing': '⚠️ 缺失',
+          'skip': '⏭️ 跳过（未执行）'}
     for r in rows:
         md.append(f'| {r["category"]} | `{r["key"]}` | {ic[r["status"]]} | '
                   f'{r["rc"]} | {r["seconds"]} | {r["description"]} |')

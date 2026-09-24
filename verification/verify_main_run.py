@@ -17,6 +17,16 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, 'results', 'pmr_v2')
 
+# --- SUITE-SKIP guard (injected by hand; 见 tools/add_suite_skip_guard.py 的说明) -----
+# 本项核对的是 `results/` 里的一组历史结果。公开仓库发行版不含 results/，
+# 在新 clone 里无法执行 ⇒ **显式跳过**（入口记为 skip，**不计入通过**）。
+if not os.path.isdir(D):
+    print('SUITE-SKIP: 缺少 results/pmr_v2 —— 本项核对历史结果文件，'
+          '仓库发行版不附带；在开发树（含 results/）中运行同一入口即可完整执行。',
+          flush=True)
+    sys.exit(0)
+# --- end SUITE-SKIP guard ------------------------------------------------------------
+
 ap = argparse.ArgumentParser()
 ap.add_argument('tag', nargs='?', default='main_base')
 args = ap.parse_args()
