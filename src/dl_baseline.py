@@ -236,6 +236,37 @@ def masked_local_ncc(w, f, m, win):
     return -(cc * mm).sum() / tot
 
 
+def predict(model_name, model, f, mv):
+    """两个模型统一的**前向入口**，返回 `(N,3,D,H,W)` 的位移张量（体素单位）。
+
+    🔴 为什么要有这个函数（2026-09-24，缺陷 C10）：原代码在两处写了
+
+        d = model(f, mv)[-1]        # ← 错
+
+    作者的意图是"取金字塔的最后一级"。但 `LapIRN.forward` 在
+    `return_all=False`（默认）时**返回的是张量**，不是列表 ——
+    于是 `[-1]` 取的是张量在**最后一维上的切片**，位移从 `(N,3,D,H,W)` 变成
+    `(N,3,D,H,W-1)`，接着 `_smooth()` 立刻抛
+    `IndexError: too many indices for tensor of dimension 4`。
+
+    这个错误的隐蔽之处：`x[-1]` 对**列表**和**张量**都是合法语法，
+    只是语义完全不同；而且在 C9（金字塔内部尺寸错配）修好之前，
+    代码根本走不到这一行，所以它一直没暴露。
+    统一入口 + `assert` 把"必须是 5 维"这件事**钉死**在这里。
+    """
+    if model_name == 'voxelmorph':
+        d = model(torch.cat([f, mv], dim=1))
+    else:
+        # 显式取"金字塔最后一级"，不依赖上游返回的是张量还是列表
+        d = model(f, mv, return_all=True)[-1]
+    assert d.dim() == 5, (
+        f'predict() 必须返回 (N,3,D,H,W)，实际 {tuple(d.shape)}。'
+        f'若你把 `model(f, mv)` 的返回值再取了 `[-1]`，那是**最后一维的切片**，不是"最后一级"。')
+    assert tuple(d.shape[2:]) == tuple(f.shape[2:]), (
+        f'位移空间尺寸 {tuple(d.shape[2:])} 与输入 {tuple(f.shape[2:])} 不一致')
+    return d
+
+
 # ==================== 数据 ====================
 def load_case(cn, down, dataset='dirlab'):
     """返回 (imgs[10] 归一化图, mask, spacing)。
@@ -347,10 +378,7 @@ def train(model_name, fold, down, epochs, lr, patch, lam, win_mm, seed, log_ever
             mp = crop_at(m, off, sz, patch).clamp(0, 1)
             f, mv, mp = f.to(DEV), mv.to(DEV), mp.to(DEV)   # 只把 patch 搬上 GPU
             opt.zero_grad(set_to_none=True)
-            if model_name == 'voxelmorph':
-                d = model(torch.cat([f, mv], dim=1))
-            else:
-                d = model(f, mv)[-1]
+            d = predict(model_name, model, f, mv)
             w = _warp(mv, d)
             loss = masked_local_ncc(w, f, mp, win) + lam * _smooth(d)
             loss.backward()
@@ -382,10 +410,7 @@ def evaluate(model_name, model, fold, down, dataset='dirlab'):
     mv = imgs[5].to(DEV)
     base = float(np.linalg.norm(lm0 - lm5, axis=1).mean())
 
-    if model_name == 'voxelmorph':
-        d = model(torch.cat([f, mv], dim=1))
-    else:
-        d = model(f, mv)[-1]
+    d = predict(model_name, model, f, mv)
     d_np = d[0].cpu().numpy() * sp[:, None, None, None]          # 体素 → mm
     d_lm = sample_trilinear(d_np, lm0, sp)
     tre = float(np.linalg.norm(lm0 + d_lm - lm5, axis=1).mean())

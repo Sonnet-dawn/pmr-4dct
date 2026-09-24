@@ -33,6 +33,7 @@ for _p in (_os.path.join(_R, "src"), _R):
         _sys.path.insert(0, _p)
 # --- end path shim ---
 import os
+import re
 import sys
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -44,7 +45,7 @@ for _p in (HERE, os.path.join(HERE, 'src')):
 import torch  # noqa: E402
 
 try:
-    from dl_baseline import UNet3D, LapIRN   # noqa: E402
+    from dl_baseline import UNet3D, LapIRN, predict, _smooth   # noqa: E402
 except Exception as e:                        # pragma: no cover
     print(f'❌ 无法 import dl_baseline：{type(e).__name__}: {e}')
     sys.exit(1)
@@ -130,9 +131,52 @@ check('voxelmorph 初始位移 max|d| == 0', float(y0.abs().max()) == 0.0,
       f'→ {float(y0.abs().max()):.3e}')
 
 print('\n' + '=' * 88)
+print('5) 🔴 `predict()` 统一入口 —— 这条锁的是缺陷 C10')
+print('=' * 88)
+print('   背景：原代码两处写 `d = model(f, mv)[-1]`，意图是"取金字塔最后一级"，')
+print('   但 `LapIRN.forward` 默认返回**张量**，于是 `[-1]` 变成了**最后一维的切片**，')
+print('   位移从 (N,3,D,H,W) 静默变成 (N,3,D,H,W-1)，随后 `_smooth()` 抛 IndexError。')
+torch.manual_seed(2)
+vm_p = UNet3D(3, base=4, depth=3).eval()
+lp_p = LapIRN(levels=3, base=4).eval()
+for name, mdl in (('voxelmorph', vm_p), ('lapirn', lp_p)):
+    a = torch.randn(1, 1, 32, 32, 32)
+    b = torch.randn(1, 1, 32, 32, 32)
+    with torch.no_grad():
+        d = predict(name, mdl, a, b)
+    check(f'predict({name}) 返回 5 维 (N,3,D,H,W) 且与输入同尺寸',
+          d.dim() == 5 and tuple(d.shape[2:]) == (32, 32, 32),
+          f'→ {tuple(d.shape)}')
+    # 这条是"陷阱本身"的回归：对 predict 的返回值再取 [-1] 必须**变得不像位移**
+    with torch.no_grad():
+        bad = d[-1]
+    check(f'  ↳ 对张量取 [-1] 会退化成 4 维（这正是 C10 的形状，应被 assert 拦住）',
+          bad.dim() == 4, f'→ {tuple(bad.shape)}')
+    # `_smooth` 必须能吃 predict 的输出（C10 就是死在这一步）
+    try:
+        _smooth(d)
+        check(f'  ↳ `_smooth(predict(...))` 不抛错', True)
+    except Exception as e:
+        check(f'  ↳ `_smooth(predict(...))` 不抛错', False,
+              f'→ {type(e).__name__}: {str(e)[:70]}')
+
+# 静态检查：源码里不允许再出现 `model(f, mv)[-1]` 式写法。
+# ⚠️ 必须**先剥掉 docstring**：`predict()` 的文档里正是用这一行作为反例 ——
+#    第一版没剥，于是把文档里的反例当成了真实代码（验证器自己错了，见 docs/44）。
+# ⚠️ 路径必须取 **import 进来的模块路径**，不能写"同目录"：仓库布局是 src/ + verification/，
+#    同目录下没有 dl_baseline.py（第一版这么写，CI 直接 FileNotFoundError）。
+import dl_baseline as _dlb   # noqa: E402
+src = open(_dlb.__file__, encoding='utf-8').read()
+src_nc = re.sub(r'"""(?:.|\n)*?"""', '', src)      # 去掉三引号块（docstring）
+src_nc = re.sub(r'#[^\n]*', '', src_nc)            # 去掉 # 注释
+bad_pat = re.findall(r'model\(f,\s*mv\)\s*\[\s*-1\s*\]', src_nc)
+check('dl_baseline.py 中不再出现 `model(f, mv)[-1]`（C10 的写法）',
+      not bad_pat, f'→ 命中 {len(bad_pat)} 处')
+
+print('\n' + '=' * 88)
 print(f'结果：{n_pass} 通过 / {n_fail} 失败')
 print('=' * 88)
 if n_fail == 0:
-    print('结论：两个模型的前向在多级、非整除尺寸下均成立；'
-          '"lapirn 一跑就崩"这类错误无法再静默通过。')
+    print('结论：两个模型的前向在多级、非整除尺寸下均成立，且**调用点的写法**也被钉死；')
+    print('      "lapirn 一跑就崩"与"[-1] 静默切片"这两类错误都无法再静默通过。')
 sys.exit(1 if n_fail else 0)

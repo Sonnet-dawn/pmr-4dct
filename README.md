@@ -8,7 +8,7 @@ Memory-scalable deformable registration of 4D-CT, targeting consumer GPUs.
   memory, on an 8 GiB laptop card.
 * Exact **loop closure** by construction: `d(x,0) = d(x,2π) = 0` is an algebraic
   identity, not a penalty.
-* A verification suite that runs with every training job — and that has caught **thirteen**
+* A verification suite that runs with every training job — and that has caught **fourteen**
   documented defects in this codebase, **eleven** of which were completely silent
   (`docs/verification.md`).
 
@@ -142,7 +142,7 @@ Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1`.
 
 ## Verification
 
-The suite is not decoration: **it has caught thirteen real defects in this codebase**, listed
+The suite is not decoration: **it has caught fourteen real defects in this codebase**, listed
 in `docs/verification.md`. Eleven of them were silent — they produced plausible-looking output
 while corrupting the result. Run it before trusting any number.
 

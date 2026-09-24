@@ -1,7 +1,7 @@
 # What the verification suite has caught
 
 This file exists because "we tested it" is not evidence. Below is every real defect the
-suite has caught in *this* codebase: **thirteen, of which eleven were completely silent** —
+suite has caught in *this* codebase: **fourteen, of which eleven were completely silent** —
 the program ran to completion, wrote a result, and the result was wrong.
 
 Run the suite before trusting any number produced by this code:
@@ -11,7 +11,7 @@ python run_verification_suite.py              # everything, one entry point
 python run_verification_suite.py --quick      # code-only checks, no data needed
 ```
 
-## The thirteen defects
+## The fourteen defects
 
 | # | Defect | Consequence | Caught by | Silent? |
 |---|---|---|---|---|
@@ -28,6 +28,7 @@ python run_verification_suite.py --quick      # code-only checks, no data needed
 | 11 | The reported baseline ran at **1 mm** while this method ran at 2 mm | Not the same protocol despite being presented as one. Correcting it *and* tuning the baseline moved its mean from 3.561 to 2.555 mm and the apparent advantage from -55% to -37.5% | `tools/summarize_elastix_baseline.py` | **yes** |
 | 12 | A CREATIS landmark file that upstream does not ship was an **HTML 404 page** | `np.loadtxt` parsed it into garbage instead of failing. The loader now raises and lists the phases that do exist | `pmr_v2.load_lm_dataset` | **yes** |
 | 13 | `LapIRN` pyramid: a coarse-level displacement was warped onto a finer-level image without being resampled onto that grid first | `RuntimeError: size of tensor a (48) must match tensor b (24)`. **All 10 leave-one-out folds died in ~120 s**, the driver recorded one `!! failed` line and **exited 0** — so the batch looked finished and a whole baseline had no numbers at all | resample onto the current level; `verify_lapirn_shapes.py` checks it in CI | **yes** |
+| 14 | The same pyramid's caller wrote `d = model(f, mv)[-1]` meaning "the last level" — but that `forward` returns a **tensor** by default, so `[-1]` is the last *slice* and the displacement silently lost one voxel along its last axis | A loud `IndexError` further down, but only reachable **after** defect 13 was fixed, which is why it stayed hidden. `x[-1]` is legal for both lists and tensors, with completely different meanings | one `predict()` entry point with `assert d.dim() == 5`; a static check in `verify_lapirn_shapes.py` forbids the pattern coming back | no |
 
 ## Why defect 7 is the instructive one
 
