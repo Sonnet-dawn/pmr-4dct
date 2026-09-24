@@ -233,8 +233,49 @@ def main():
     print('     · 但最难的 case8 在两次**完全相同**的确定性运行之间可差 **5%**。')
     print('     ⇒ 因此："确定性口径下 <X% 的差异是否可判定"必须**逐例**说，')
     print('        不能用一个全局阈值；case8 上低于 ~5% 的差异**不可作为结论依据**。')
-    print('     ⇒ 这一条要写进稿件，并替换掉此前"确定性下 0.2%、故 1% 的效应可判定"')
-    print('        这种**过度外推**的表述。')
+
+    # ------------------------------------------------------------------ 非 10 例齐全的运行
+    # 🔴 2026-09-25 新增：`repdA/repdB/repdC`（队列 2 的确定性重复运行）只跑了 case 1/5/8，
+    #    上面那段因"必须 10 例齐全"把它们**整批排除**了 —— 于是最有价值的一批重复数据
+    #    没被用上。"例数不全"不等于"不能比"：**在交集病例上比**是合法的，只要写明是交集。
+    sub = {}
+    # 🔴 **必须按 tag 排除多尺度管线**：`ms4to2_*` 的结果 JSON **没有**任何字段区分
+    #    它与单尺度主配置（`tools/probe_signature_gap.py` 实测：键集相同、取值只是结果不同），
+    #    于是按签名分组会把"多尺度"和"单尺度"当成同一配置，算出 **86.55%** 的假"运行间极差"。
+    #    这是"检查器自己出错"的又一例：**签名不完整 ⇒ 分组错误 ⇒ 数字荒谬**。
+    #    处置：显式按 tag 排除，并把原因写在这里而不是让读者去猜。
+    EXCLUDE = re.compile(r'^(ms|.*coarse)', re.I)
+    for tag, how in det:
+        run = tags[tag]
+        if EXCLUDE.match(tag):
+            continue
+        if 3 <= len(run) < 10:
+            key, _ = signature(run)
+            sub.setdefault(key, []).append(tag)
+    sub_multi = {k: v for k, v in sub.items() if len(v) >= 2}
+
+    print('\n' + '=' * 96)
+    print('确定性口径下、**病例子集**上的重复运行（例如只跑了 case 1/5/8 的那几次）')
+    print('=' * 96)
+    if not sub_multi:
+        print('  （还没有这样的运行）')
+    else:
+        for k, v in sorted(sub_multi.items(), key=lambda kv: -len(kv[1])):
+            shared = sorted(set.intersection(*[set(tags[t]) for t in v]))
+            if len(shared) < 2:
+                continue
+            print(f'\n▶ 运行：{v}   共同病例：{shared}')
+            print(f'  {"case":>4} ' + ' '.join(f'{t[:12]:>12}' for t in v)
+                  + f' {"极差%":>8}')
+            mx = 0.0
+            for c in shared:
+                vals = [tags[t][c]['tre_total_STANDARD'] for t in v]
+                pct = 100 * (max(vals) - min(vals)) / st.mean(vals)
+                mx = max(mx, pct)
+                print(f'  {c:>4} ' + ' '.join(f'{x:>12.4f}' for x in vals)
+                      + f' {pct:>7.2f}%')
+            print(f'  ⇒ 交集上的最大逐例极差 **{mx:.2f}%**'
+                  f'（⚠️ 只在 {shared} 上可比，不得外推到十例）')
 
 
 if __name__ == '__main__':
