@@ -19,7 +19,13 @@
    measured is this implementation's own peak on the same case (3.25 GiB) and the card's
    capacity (7.96 GiB); the conclusion that a naive version would not fit follows from
    those measurements plus the arithmetic.
-7. **Run-to-run variability** is 6.2% (SD) unless `--cudnn-benchmark 0` is used.
+7. **Run-to-run variability** is 6.2% (SD, of the mean) unless `--cudnn-benchmark 0` is used.
+   Passing the flag removes most of it but, importantly, not uniformly: two complete runs of
+   an identical configuration with the flag off differed by 0.5-1.6% on the nine easier
+   DIR-Lab cases but by **5.3%** and **5.4%** on the two hardest, while the ten-case mean
+   moved by only 0.47%. The flag stabilises an aggregate number; it does not make the hardest
+   single cases reproducible, and single-case differences of a few percent there should not be
+   interpreted.
 8. **Landmark phase coverage is uneven.** On CREATIS, only cases 0-2 carry expert
    landmarks at all ten phases; cases 3-5 carry them only at end-exhale (T00) and
    end-inhale (T50). Requiring a phase that does not exist raises an error rather than

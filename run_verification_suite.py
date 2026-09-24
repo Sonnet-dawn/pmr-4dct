@@ -64,6 +64,10 @@ SUITE = [
      900, '低相位下"闭合误差更小"是否只是复合插值污染'),
     ('paperB_numbers', 'data', 'tools/verify_paperB_numbers.py', [],
      600, 'Paper B 报告数字与 results/ 来源逐条核对'),
+    ('variability', 'data', 'tools/verify_variability.py', [],
+     300, '噪声模式的运行间变异：SD/极差同分母，并扫描稿件里的口径混用'),
+    ('determinism', 'data', 'tools/verify_determinism_repeats.py', [],
+     600, '确定性口径的**逐例**真实波动（同配置分组 + 日志核验确定性）'),
 ]
 
 OK_MARK = re.compile(r'(✅|PASS|通过|一致)')
