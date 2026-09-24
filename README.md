@@ -125,21 +125,25 @@ is throttled by memory rather than by compute. Measured with elastix 5.3.1 on a 
 volume (14.45 M voxels), with the control grid set explicitly:
 
 | B-spline grid | Control points | Peak RAM | Wall clock | Outcome |
-|---:|---:|---:|---:|---|
-| **8 mm** (elastix default) | 38,148 | **0.92 GiB** | 39 s | completed |
+| ---: | ---: | ---: | ---: | --- |
+| **8 mm** (one resolution level, grid set explicitly) | 38,148 | **0.92 GiB** | 39 s | completed |
 | 4 mm | 261,950 | **5.63 GiB** (6.1×) | 352 s | completed |
 | 2 mm | — | **7.54 GiB** and rising | 5 s | **stopped by our watchdog** (available RAM exhausted) |
 | 1 mm | — | **8.51 GiB** and rising | 6 s | **stopped by our watchdog** (available RAM exhausted) |
+| **8 mm, case 6** (79 M voxels, 5.5× the volume) | 187,308 | **5.07 GiB** | 363 s | completed |
 
-The control-point count grows as `1/g³` and the memory follows. Two caveats, both stated
-because they bound what the table shows: the 2 mm and 1 mm runs were terminated by **our own
-monitoring process** when available RAM fell below its floor — elastix itself printed no
-out-of-memory error — so those two figures are **lower bounds on the requirement** (the
-allocation was still growing), not measurements of it; and the machine had only ~9–10 GiB free
-at the time.
-Reproduce with `python run_elastix_memory.py --cases 1 --grids 8,4,2,1` (the script is in the
-`drivers/` directory of this repository and needs the DIR-Lab volumes; it checks available RAM
-before starting and aborts rather than pushing the machine into swap).
+The control-point count grows as `1/g³` and the memory follows it **for a fixed volume**. Three
+caveats, all stated because they bound what the table shows. First, the 2 mm and 1 mm rows were
+terminated by **our own monitoring process** when available RAM fell below its floor — elastix
+itself printed no out-of-memory error — so those two figures are **lower bounds on the
+requirement** (the allocation was still growing), and re-running them with more memory free
+raised them (3 mm: 10.30 → 12.13 GiB; 1 mm: 8.51 → 11.32 GiB). Second, the last row shows that a
+control-point-only law **under-predicts on a larger volume** (the fit predicts 4.08 GiB for it,
+measured 5.07 GiB), so memory has a volume-dependent term as well and the extrapolations to fine
+grids are **lower bounds**. Third, the machine had ~9–10 GiB free during the original sweep.
+Reproduce with `python drivers/run_elastix_memory.py --cases 1 --grids 8,4,2,1` (needs the
+DIR-Lab volumes; it checks available RAM before starting and aborts rather than pushing the
+machine into swap).
 
 > ⚠️ This is **not** a like-for-like benchmark. elastix performs one *pairwise* registration;
 > this package trains a continuous model over **all ten phases**. No ratio between the two

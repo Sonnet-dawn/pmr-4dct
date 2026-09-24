@@ -38,6 +38,10 @@ plt.rcParams.update({'font.size': 9, 'axes.linewidth': 0.8,
                      'font.family': 'DejaVu Sans'})
 
 # ── 面板 (a)：elastix 主机内存 vs 控制点 ─────────────────────────────────────
+# 🔴 2026-09-25：除 case 1 的网格扫描外，**再画一个更大体积上的点**（case 6，
+#    79 M 体素 @1 mm，8 mm 网格，已完成 5.07 GiB / 363 s）。
+#    它的作用是**纠正**"只按控制点数外推"的读法：拟合线在大体积上**低估**约 1 GiB，
+#    说明内存还有一个随图像数据规模增长的项（见稿件 §3.3）。
 rows = []
 for p in glob.glob(os.path.join(HERE, 'results', 'elastix_memory',
                                 'case1_grid*mm.json')):
@@ -45,6 +49,13 @@ for p in glob.glob(os.path.join(HERE, 'results', 'elastix_memory',
     rows.append(j)
 rows.sort(key=lambda r: -float(r['grid_mm']))
 n8 = next(r['n_control_points'] for r in rows if float(r['grid_mm']) == 8.0)
+
+big = []
+for p in glob.glob(os.path.join(HERE, 'results', 'elastix_memory',
+                                'case6_grid*mm.json')):
+    j = json.load(open(p, encoding='utf-8'))
+    if j.get('status') == 'ok' and j.get('n_control_points'):
+        big.append(j)
 
 ok = [r for r in rows if r['status'] == 'ok']
 N = np.array([r['n_control_points'] for r in ok], float)
@@ -58,7 +69,17 @@ axa = ax[0]
 xs = np.logspace(np.log10(N.min() * 0.7), np.log10(2.6e7), 200)
 axa.plot(xs, a + b * xs, '-', color='0.55', lw=1.2, zorder=1,
          label=f'linear fit (R² = {r2:.5f})')
-axa.plot(N, M, 'o', ms=6, color='C0', zorder=3, label='measured (completed)')
+axa.plot(N, M, 'o', ms=6, color='C0', zorder=3, label='case 1 (14.5 M voxels), completed')
+if big:
+    BX = np.array([r['n_control_points'] for r in big], float)
+    BY = np.array([r['peak_rss_gb'] for r in big], float)
+    axa.plot(BX, BY, 's', ms=6.5, color='C1', zorder=4,
+             label='case 6 (79 M voxels), completed')
+    for bxn, byn in zip(BX, BY):
+        axa.annotate(f'larger volume:\nfit under-predicts\n({a + b*bxn:.1f} → {byn:.1f} GiB)',
+                     xy=(bxn, byn), xytext=(bxn * 0.16, byn * 1.55),
+                     fontsize=6.6, color='C1',
+                     arrowprops=dict(arrowstyle='-', color='C1', lw=0.8))
 for r in rows:
     if r['status'] != 'ok':
         g = float(r['grid_mm'])

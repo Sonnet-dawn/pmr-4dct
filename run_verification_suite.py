@@ -61,7 +61,13 @@ SUITE = [
     ('coarse_tre', 'data', 'verify_coarse_tre.py', [],
      600, '4 mm 粗尺度"更好"是否只是评估分辨率的假象'),
     ('lowphase', 'data', 'verify_lowphase.py', [],
-     900, '低相位下"闭合误差更小"是否只是复合插值污染'),
+     # 🔴 2026-09-25：超时从 900 s 提到 1800 s。**原因是实测的，不是猜的**：
+     #    在机器同时跑训练（LapIRN 留一法）+ elastix 内存补测时，本项跑了 900 s 仍未完成
+     #    并被判 timeout —— 而 timeout 会被当成"未通过"，让整套报告变红。
+     #    本项要遍历多组历史结果并做复合插值，本身就是**最重的一项**。
+     #    ⚠️ 提到 1800 s 不等于"它一定能在负载下跑完"：正确的读法是
+     #       "它需要在机器不忙时跑"，这一点写在这里而不是让红色报告去误导人。
+     1800, '低相位下"闭合误差更小"是否只是复合插值污染（**最重的一项：请在机器空闲时跑**）'),
     ('paperB_numbers', 'data', 'tools/verify_paperB_numbers.py', [],
      600, 'Paper B 报告数字与 results/ 来源逐条核对'),
     ('variability', 'data', 'tools/verify_variability.py', [],
