@@ -4,8 +4,9 @@ title: "PMR: memory-scalable 4D-CT deformable registration for consumer GPUs"
 abstract: >-
   Phase-manifold registration of 4D-CT: the ten breathing phases are represented
   as one periodic curve in the breathing phase, so loop closure is an algebraic
-  identity. Full-resolution (1 mm) registration of 144 million voxels fits in
-  2.4-3.3 GiB of GPU memory, with a verification suite that runs alongside training.
+  identity. Full-resolution (1 mm) registration of a 144-million-voxel ten-phase
+  series completes on an 8 GiB consumer card with a measured peak allocation of
+  3.25 GiB, with a verification suite that runs alongside training.
 type: software
 version: 1.0.5
 date-released: "2026-09-25"
@@ -16,10 +17,13 @@ doi: "10.5281/zenodo.22899962"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.22899962"
-    description: "Zenodo archive"
+    description: "Zenodo concept DOI (resolves to the latest archived version; version 1.0.5 is 10.5281/zenodo.22949457)"
   - type: swh
-    value: "swh:1:rev:9770ffc7ee5fd7fe6e0f45ae01b318850108892c"
-    description: "Software Heritage revision of v1.0.2 — this is NOT the revision of version 1.0.5; see the archival table in README.md for which versions are archived where"
+    value: "swh:1:rev:c12343588595b7756024c9a4f57073b33b6e2382"
+    description: "Software Heritage revision of version 1.0.5 (the commit the v1.0.5 tag points to)"
+  - type: swh
+    value: "swh:1:snp:133097ababbe7550c180bfa6698baf455186e074"
+    description: "Software Heritage snapshot of the whole repository when v1.0.5 was archived; it contains every tag v1.0.0-v1.0.5"
 # TODO(authors): replace with one entry per author, in the paper's author order.
 #   ORCID is optional; omit the line for any author who does not have one.
 authors:

@@ -197,24 +197,31 @@ revision stays retrievable even if this repository moves or disappears:
 
 | | |
 |---|---|
-| **DOI (cite this)** | **[10.5281/zenodo.22899962](https://doi.org/10.5281/zenodo.22899962)** (concept DOI: always resolves to the latest **archived** release) |
+| **DOI (cite this)** | **[10.5281/zenodo.22899962](https://doi.org/10.5281/zenodo.22899962)** (concept DOI — unlike a version DOI it keeps resolving as versions are added) |
 | Repository | https://github.com/Sonnet-dawn/pmr-4dct |
 | This version | https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.5 |
-| SWH snapshot | `swh:1:snp:2871fbfe6e030ec739c82f1c5bdb3c855155fdf1` |
+| Version DOI (this version) | `10.5281/zenodo.22949457` |
+| SWH snapshot | `swh:1:snp:133097ababbe7550c180bfa6698baf455186e074` |
 
-**Which version the DOI actually resolves to, stated plainly**, because "concept DOI" hides
-this and it matters when you are trying to check a submitted paper against archived code:
+**Which version each archive actually holds, stated plainly**, because both "concept DOI" and
+"snapshot" hide this, and it matters when you are checking a submitted paper against archived
+code. Every row below was verified against the archive APIs themselves — not copied from
+release notes — and `tools/verify_external_ids.py` re-checks it on demand:
 
-| Version | GitHub Release | Archived on Zenodo? | Software Heritage revision |
+| Version | GitHub Release | Archived on Zenodo? | In the snapshot above? |
 |---|---|---|---|
-| **v1.0.5** | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.5) | see the Zenodo record — the integration archived v1.0.2 and did **not** archive v1.0.3 or v1.0.4, a discrepancy we could not resolve from outside Zenodo | retrieve by the tag against the snapshot above |
-| v1.0.4 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.4) | **no** | — |
-| v1.0.3 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.3) | **no** | — |
-| v1.0.2 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.2) | **yes** — version DOI `10.5281/zenodo.22899963` | `swh:1:rev:9770ffc7ee5fd7fe6e0f45ae01b318850108892c` |
-| v1.0.0 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.0) | **no** | `swh:1:rev:be248d6d619eec5bcf04ce7fd044fe2fc177728a` |
+| **v1.0.5** | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.5) | **yes** — version DOI `10.5281/zenodo.22949457` | **yes** — tag present, `main` matches it |
+| v1.0.4 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.4) | **no** | yes — tag present |
+| v1.0.3 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.3) | **no** | yes — tag present |
+| v1.0.2 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.2) | **yes** — version DOI `10.5281/zenodo.22899963` | yes — tag present |
+| v1.0.0 | [tag](https://github.com/Sonnet-dawn/pmr-4dct/releases/tag/v1.0.0) | **no** | yes — tag present |
 
-If you need the code of *this* version and the DOI resolves to an older archive, use the
-release tag or the Software Heritage revision — that is exactly why both are listed.
+The Zenodo column was **not** produced by the GitHub/Zenodo integration: that integration
+archived v1.0.2 and then never fired again, so v1.0.3 and v1.0.4 were never archived, and
+v1.0.5 was uploaded by hand. Software Heritage, by contrast, has one snapshot containing
+every tag. The two archives are therefore independent in the strongest sense — neither one's
+coverage can be inferred from the other's — which is why this table is per version instead of
+a single "archived" tick.
 
 The source is archived in two independent places: **Zenodo** (with a DOI) and
 **Software Heritage** (long-term code archive, DOI-independent).
