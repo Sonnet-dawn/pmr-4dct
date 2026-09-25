@@ -36,6 +36,11 @@ _R = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 for _p in (_os.path.join(_R, "src"), _R):
     if _p not in _sys.path:
         _sys.path.insert(0, _p)
+try:
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 # --- end path shim ---
 import numpy as np
 
@@ -146,7 +151,15 @@ def main():
     print()
     print('  => 精确闭合 + 连续相位 + 零表示损失 可同时达到，无取舍。')
     print('  => 因此 PMR 的精度瓶颈**不可能**来自流形表示；只能来自相似度 / 优化。')
-    print('     （实测印证：见 docs/21 —— 换用肺掩膜后最简成对配置 TRE 改善 41–46%）')
+    # 🔴 2026-09-25（docs/44 T-19）：这一行原先写的是
+    #    「（实测印证：见 docs/21 —— 换用肺掩膜后最简成对配置 TRE 改善 41–46%）」。
+    #    该结果**已被撤回**（docs/17 的 **C46**）：当时 masked 臂用**局部** NCC、
+    #    unmasked 臂用**全局** NCC，两臂**不可比**（含混杂）；更正后的效应小得多，
+    #    且主要来自抑制肺外背景。而且 `docs/21` **不在发行版里**，那条引用在克隆下来是悬空的。
+    #    一个随发行版发布的验证脚本**不能用一条已撤回的结果**去"印证"任何东西。
+    print('     ⚠️ 注意：上面这句只说明"表示能力不是瓶颈"，**不等于**某一项改动就是解药。')
+    print('        早期"换肺掩膜使最简成对配置 TRE 改善 41–46%"的结果**已撤回** ——')
+    print('        那次两臂用了不同的 NCC 设置，含混杂；更正后的效应小得多。见 docs/17 的 C46。')
 
 
 if __name__ == '__main__':

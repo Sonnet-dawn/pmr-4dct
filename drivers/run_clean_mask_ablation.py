@@ -22,6 +22,11 @@ _R = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 for _p in (_os.path.join(_R, "src"), _R):
     if _p not in _sys.path:
         _sys.path.insert(0, _p)
+try:
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 # --- end path shim ---
 import os, sys, json, time, argparse
 import numpy as np
@@ -30,6 +35,19 @@ import torch
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+
+# --- SUITE-SKIP guard (辅助模块；docs/44 T-20) ---------------------------------
+# 🔴 2026-09-25：本脚本 import `diag_metric_probe`，而它**故意不进发行版**（它自己还要
+#    `diag_pairwise`，属于诊断工具链，不是论文结论的一部分）。
+#    发行版里没有它 ⇒ 别人的 clone 一执行这条命令就是 ModuleNotFoundError。
+#    按本项目约定：缺前置条件**显式跳过**，不要崩。
+import importlib.util as _ilu
+if _ilu.find_spec('diag_metric_probe') is None:
+    print('SUITE-SKIP: 缺少辅助模块 diag_metric_probe —— 它不属于仓库发行版（见 docs/44 T-20）；'
+          '在开发树（含该模块）中运行同一入口即可完整执行。', flush=True)
+    sys.exit(0)
+# --- end SUITE-SKIP guard ------------------------------------------------------
+
 from diag_metric_probe import probe
 from recompute_tre_standard import load_lm, sample_trilinear
 

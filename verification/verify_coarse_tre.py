@@ -22,6 +22,11 @@ _R = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 for _p in (_os.path.join(_R, "src"), _R):
     if _p not in _sys.path:
         _sys.path.insert(0, _p)
+try:
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 # --- end path shim ---
 import os, sys, json, argparse, glob
 import numpy as np

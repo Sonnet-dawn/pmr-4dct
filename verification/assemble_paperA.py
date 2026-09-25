@@ -32,11 +32,20 @@ _R = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 for _p in (_os.path.join(_R, "src"), _R):
     if _p not in _sys.path:
         _sys.path.insert(0, _p)
+try:
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 # --- end path shim ---
 import os
 import re
 import sys
 import argparse
+
+# 占位符豁免规则**只有一份**（见 tools/_deferred.py 的说明：两处副本曾静默分叉）
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _deferred import is_deferred_todo  # noqa: E402
 
 sys.stdout.reconfigure(encoding='utf-8')
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -181,18 +190,18 @@ def main():
         issues.append(f'章节编号 {nums}')
 
     # 3) 投稿版里不得残留内部引用
-    #    ⚠️ 例外：作者/单位/通讯作者、以及 CRediT/Acknowledgements 里"待作者名单确定"的
-    #    `TODO`，都是**有意的占位符**（按计划最后填）。把它们算成"泄漏"会让自检永远失败、
-    #    进而被忽略 —— 那比不检查更糟。
-    PLACEHOLDER_OK = ('**Authors:**', '**Affiliations:**', '**Corresponding author:**',
-                      'author list', 'AUTHORS_TODO')
+    #    ⚠️ 例外：作者/单位/通讯作者、以及 CRediT/Acknowledgements/Funding/Supporting
+    #    information 里"要外部输入才能填"的 `TODO`，都是**有意的占位符**（按计划最后填）。
+    #    把它们算成"泄漏"会让自检永远失败、进而被忽略 —— 那比不检查更糟。
+    #    🔴 判定规则**只有一份**：`tools/_deferred.py`，`tools/audit_completeness.py` 也导入它。
+    #       两处各写一份副本曾经静默分叉 —— 与 docs/44 的 T-2/T-5/T-14/T-16 同一根因。
     leaked = []
+    _lines = pub_text.splitlines()
     for m in INTERNAL_MARKERS:
         if m == 'TODO':
             for mm in re.finditer(r'TODO', pub_text):
                 ln = pub_text[:mm.start()].count('\n') + 1
-                line = pub_text.splitlines()[ln - 1] if ln - 1 < len(pub_text.splitlines()) else ''
-                if any(p in line for p in PLACEHOLDER_OK):
+                if is_deferred_todo(_lines, ln):
                     continue
                 leaked.append((m, ln))
             continue

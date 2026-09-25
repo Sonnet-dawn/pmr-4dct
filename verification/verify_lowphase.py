@@ -19,6 +19,11 @@ _R = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 for _p in (_os.path.join(_R, "src"), _R):
     if _p not in _sys.path:
         _sys.path.insert(0, _p)
+try:
+    _sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    _sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 # --- end path shim ---
 import os, sys, json
 import numpy as np
@@ -35,7 +40,23 @@ if not os.path.isdir(_NEED_DIR):
     sys.exit(0)
 # --- end SUITE-SKIP guard ------------------------------------------------------
 
+# --- SUITE-SKIP guard (辅助模块；docs/44 T-20) ---------------------------------
+# 🔴 2026-09-25：本脚本还依赖 `viz_common` / `run_decisive` / `closure_loop_exp` 三个
+#    **辅助模块**，它们**故意不进发行版** —— `closure_loop_exp` 会牵出 `voxelmorph`
+#    （不在 requirements.txt 里）与 `vxm_lung_tre`，`viz_common` 里还硬编码了本机绝对路径。
+#    把整棵依赖树发出去是错的；但"只带数据、没带模块的人一进来就 traceback"也是错的。
+#    按本项目一贯约定，**缺前置条件应当显式跳过**，与上面"缺数据就跳过"同一套写法。
+import importlib.util as _ilu
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decisive_exp'))
+_HELPERS = ('viz_common', 'run_decisive', 'closure_loop_exp')
+_MISSING = [m for m in _HELPERS if _ilu.find_spec(m) is None]
+if _MISSING:
+    print('SUITE-SKIP: 缺少辅助模块 %s —— 它们不属于仓库发行版（见 docs/44 T-20）；'
+          '在开发树（含这些模块）中运行同一入口即可完整执行。' % ', '.join(_MISSING),
+          flush=True)
+    sys.exit(0)
+# --- end SUITE-SKIP guard ------------------------------------------------------
+
 from viz_common import (load_pmr_dvf, load_landmarks, sample_dvf_mm, load_bspline_fields)
 import run_decisive as rd
 from closure_loop_exp import load_phase_imgs, compose_and_stats

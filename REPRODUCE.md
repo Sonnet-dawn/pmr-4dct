@@ -18,10 +18,16 @@
 python -c "import torch, SimpleITK, numpy, scipy, psutil, matplotlib; print(torch.__version__, torch.cuda.is_available())"
 ```
 
-Tested on Python 3.10 with the versions pinned in `requirements.txt`; the reported numbers come
+Tested on **Python 3.9.25** with the versions pinned in `requirements.txt`; the reported numbers come
 from a single **RTX 5060 Laptop GPU with 8 GB (7.96 GiB usable)**, 24 CPU cores and 31.4 GiB of
-RAM, on Windows. Memory figures are GiB (2³⁰ bytes), matching what
+RAM, on Windows 11. Memory figures are GiB (2³⁰ bytes), matching what
 `torch.cuda.max_memory_allocated()` reports.
+
+> 🔴 **这一行原先写的是 "Python 3.10"**（`docs/44` **T-18**）。实际记录在
+> `handoff_paperB/06_environment/actual_environment.txt` 里的环境，自 2026-09-22 起一直是
+> **3.9.25**；而且代码里**没有任何 3.10+ 专有语法**（无 `match` 语句、无 PEP 604 的 `X | Y` 类型标注），
+> 所以"3.10"既不是实测版本，也不是真实的最低要求。
+> 这类错误的代价：按文档建 3.10 环境的人会以为版本对上了，而真正的问题在别处。
 
 ## 1. Data
 
