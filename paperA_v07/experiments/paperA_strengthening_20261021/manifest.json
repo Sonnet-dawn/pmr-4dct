@@ -1,0 +1,1313 @@
+{
+  "study": "PaperA_strengthening_20261021",
+  "status": "prespecified",
+  "primary_seed": 0,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "working_spacing_mm": 2,
+  "policy": "Run every listed case; retain failures; no result-dependent tuning.",
+  "comparison": "Pair by case and seed; average seeds within case before cohort inference.",
+  "nyquist": "Append cos(5theta)-1 to encoder and residual; zero added weights; preserve common initialization and per-coefficient penalty.",
+  "elastix": "Fixed transferred 5-level, 6-mm B-spline MI protocol; explicit 32 histogram bins; no CREATIS landmark-based parameter selection.",
+  "jobs": [
+    {
+      "id": "dirlab_c01_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c01_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c01_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c01_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c01_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c05_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c05_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c05_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c05_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c05_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c08_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c08_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c08_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c08_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c08_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c02_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c02_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c02_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c02_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c02_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c03_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c03_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c03_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c03_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c03_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c04_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c04_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c04_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c04_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c04_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c06_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c06_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c06_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c06_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c06_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c07_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c07_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c07_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c07_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c07_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c09_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c09_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c09_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c09_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c09_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c10_s0_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c10_s0_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c10_s0_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c10_s0_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c10_s0_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "nyquist"
+    },
+    {
+      "id": "creatis_c00_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 0,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c00_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 0,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "creatis_c01_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 1,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c01_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 1,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "creatis_c02_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 2,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c02_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 2,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "creatis_c03_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 3,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c03_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 3,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "creatis_c04_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 4,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c04_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 4,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "creatis_c05_s0_final",
+      "kind": "pmr",
+      "dataset": "creatis",
+      "case": 5,
+      "seed": 0,
+      "arm": "final"
+    },
+    {
+      "id": "creatis_c05_elastix",
+      "kind": "elastix",
+      "dataset": "creatis",
+      "case": 5,
+      "seed": null,
+      "arm": "elastix"
+    },
+    {
+      "id": "dirlab_c01_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c01_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c01_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c01_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c01_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c05_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c05_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c05_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c05_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c05_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c08_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c08_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c08_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c08_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c08_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c02_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c02_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c02_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c02_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c02_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c03_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c03_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c03_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c03_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c03_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c04_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c04_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c04_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c04_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c04_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c06_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c06_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c06_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c06_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c06_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c07_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c07_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c07_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c07_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c07_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c09_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c09_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c09_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c09_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c09_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c10_s1_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c10_s1_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c10_s1_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c10_s1_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c10_s1_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c01_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c01_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c01_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c01_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c01_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c05_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c05_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c05_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c05_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c05_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c08_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c08_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c08_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c08_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c08_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c02_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c02_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c02_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c02_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c02_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c03_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c03_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c03_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c03_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c03_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c04_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c04_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c04_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c04_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c04_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c06_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c06_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c06_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c06_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c06_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c07_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c07_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c07_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c07_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c07_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c09_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c09_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c09_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c09_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c09_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "nyquist"
+    },
+    {
+      "id": "dirlab_c10_s2_final",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "final"
+    },
+    {
+      "id": "dirlab_c10_s2_control",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "control"
+    },
+    {
+      "id": "dirlab_c10_s2_minmax",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "minmax"
+    },
+    {
+      "id": "dirlab_c10_s2_whole",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "whole"
+    },
+    {
+      "id": "dirlab_c10_s2_nyquist",
+      "kind": "pmr",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "nyquist"
+    }
+  ]
+}

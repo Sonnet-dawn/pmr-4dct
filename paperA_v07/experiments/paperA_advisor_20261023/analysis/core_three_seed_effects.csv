@@ -1,0 +1,3 @@
+﻿model,mean_difference_mm,exploratory_low_mm,exploratory_high_mm,variant_lower_cases,n_cases,seeds_per_case,bootstrap_draws,bootstrap_seed
+noaffine,0.09145783525000595,0.012726530552601718,0.22641711807213047,2,10,3,10000,20261022
+noresidual,0.483782180657874,0.281920925996063,0.6910169060907044,0,10,3,10000,20261022

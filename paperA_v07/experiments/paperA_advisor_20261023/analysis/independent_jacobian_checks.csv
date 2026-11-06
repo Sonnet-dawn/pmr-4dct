@@ -1,0 +1,8 @@
+﻿dataset,case,seed,independent_roi_nonpositive_pct,archived_roi_nonpositive_pct,independent_min_jacobian,roi,method
+dirlab,6,0,0.1713064942092761,0.1713064942092761,-0.8944640865704472,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+dirlab,6,1,0.1741284035131111,0.1741284035131111,-1.209789445072078,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+dirlab,6,2,0.11188040416381018,0.11188040416381018,-1.5370275127138546,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+dirlab,8,0,0.18460890376589772,0.18460890376589775,-1.7183082845680482,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+dirlab,8,1,0.166850105417053,0.16685010541705297,-1.5103209520428444,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+dirlab,8,2,0.1214206212688455,0.1214206212688455,-1.8145227038140408,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant
+creatis,0,0,0.0018983749910076973,0.0018983749910076973,-0.13907453267939768,unwarped T00/T50 lung union with 5-voxel cube dilation,direct physical-coordinate derivatives and explicit 3x3 determinant

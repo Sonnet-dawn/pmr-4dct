@@ -1,5 +1,7 @@
 # PMR — Phase-Manifold Registration for 4D-CT
 
+> **Paper A v07 (November 2026):** [current manuscript code, configurations and derived results](paperA_v07/README.md). Its table mapping and analysis supersede the historical Paper A performance/closure summaries below; older release descriptions remain for provenance.
+
 [![verification](https://github.com/Sonnet-dawn/pmr-4dct/actions/workflows/verify.yml/badge.svg)](https://github.com/Sonnet-dawn/pmr-4dct/actions/workflows/verify.yml)
 
 Memory-scalable deformable registration of 4D-CT, targeting consumer GPUs.

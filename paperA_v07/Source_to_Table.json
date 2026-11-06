@@ -1,0 +1,130 @@
+[
+  {
+    "table": "Main Table 1",
+    "source": "experiments\\paperA_components_20261022\\analysis\\fig03_accuracy.csv",
+    "sha256": "1549bcf38d63f6c9f3c98d10be32598c684de49623d6fed420b495f46ff3e2f6",
+    "rows": 10,
+    "definition": "Ten case means; PMR seed0; archived comparator scalars",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/fig03_accuracy.csv"
+  },
+  {
+    "table": "Main Table 2",
+    "source": "experiments\\paperA_components_20261022\\analysis\\creatis.csv",
+    "sha256": "76b020c34a86769bc079a625400ac19942e13d53cd1231d964346a094dfe2fb4",
+    "rows": 12,
+    "definition": "Six PMR saved-field and six exact continuous elastix endpoint results",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/creatis.csv"
+  },
+  {
+    "table": "Main Table 3",
+    "source": "experiments\\paperA_components_20261022\\analysis\\phase_summary.csv",
+    "sha256": "6ff565f56bf1424f8d2ec9e4c7b63e360ed733a39c8e675be7d765ed7f7c0a93",
+    "rows": 5,
+    "definition": "Ten cases per acquired phase; 75-landmark set, not 300-point endpoints",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/phase_summary.csv"
+  },
+  {
+    "table": "Main Table 4 / S3",
+    "source": "experiments\\paperA_components_20261022\\analysis\\component_case_results.csv",
+    "sha256": "404c358fe7743bc48c203851d219f6915b03fbbed92bafc7d568f19052f4d973",
+    "rows": 50,
+    "definition": "Five configurations, ten cases each, seed0",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/component_case_results.csv"
+  },
+  {
+    "table": "Main Table 5",
+    "source": "experiments\\paperA_components_20261022\\analysis\\fig04_ablation.csv",
+    "sha256": "fe8708a35ef1b2dbc44bc22263d72d07fbe5bf1767455a5c6e98d9ba50d1397d",
+    "rows": 10,
+    "definition": "Three seeds averaged within patient before cohort mean",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/fig04_ablation.csv"
+  },
+  {
+    "table": "Main Table 6",
+    "source": "experiments\\paperA_components_20261022\\analysis\\folding.csv",
+    "sha256": "c81f3671d3464efbdc65999f44e2aa5e5376dbdd672ac864c5ce3fc2e1d2ce25",
+    "rows": 10,
+    "definition": "Seed0 T50 versus ten-phase mean, dilated T00/T50 union ROI",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/folding.csv"
+  },
+  {
+    "table": "Main Table 7",
+    "source": "experiments\\paperA_components_20261022\\analysis\\repeats.csv",
+    "sha256": "aa57d6541bbe23e031287bd86c8e20ac61a4cb0e5eec65697409eb925000cc58",
+    "rows": 10,
+    "definition": "Per-case three-seed sample SD and relative range",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/repeats.csv"
+  },
+  {
+    "table": "Main Table 8",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\archived_pairwise_loops.csv",
+    "sha256": "f91e7bca2b2c97674e3d5bb46d50698718800e78a0bf1897ec6aac19df4fc774",
+    "rows": 11,
+    "definition": "Five case mean absolute components; maximum across five cases",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/archived_pairwise_loops.csv"
+  },
+  {
+    "table": "Main Table 9 / S5",
+    "source": "experiments\\paperA_components_20261022\\analysis\\component_summary.csv",
+    "sha256": "83da276b653b18ba636ee9dce405f69a0a308021dc931389c9e95652ad1d3c50",
+    "rows": 5,
+    "definition": "Primary seed0 resource record; CoarseOnly pipeline/peak N/A",
+    "bundled_copy": "experiments/paperA_components_20261022/analysis/component_summary.csv"
+  },
+  {
+    "table": "S1",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\verification_ledger_rows.csv",
+    "sha256": "90a1beb99736631dfaffbbd4c3538caf2e2291d65878518888bbc24e1382f6e6",
+    "rows": 14,
+    "definition": "14 defects; 10 individually silent; historical aggregate discrepancy recorded",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/verification_ledger_rows.csv"
+  },
+  {
+    "table": "S2 measured 1mm",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\archived_1mm_memory.csv",
+    "sha256": "e7d2d22c1e8deb30316a3465c5b4bfe7197b412465061c3256284033aaba6085",
+    "rows": 5,
+    "definition": "Five historical measured allocations, descriptive capacity archive",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/archived_1mm_memory.csv"
+  },
+  {
+    "table": "S2 measured 2mm",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\archived_2mm_memory.csv",
+    "sha256": "25bff1a7fe2f3ae827e2c315618517fdf832feead1ea90fbd52cd2a473c6fd84",
+    "rows": 16,
+    "definition": "Historical 10 DIR-Lab / 6 CREATIS values, not current primary fits",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/archived_2mm_memory.csv"
+  },
+  {
+    "table": "S2 projected",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\archived_1mm_memory.csv",
+    "sha256": "e7d2d22c1e8deb30316a3465c5b4bfe7197b412465061c3256284033aaba6085",
+    "rows": 5,
+    "definition": "Through-origin least squares at79M voxels; outside observed range",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/archived_1mm_memory.csv"
+  },
+  {
+    "table": "S4",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\core_three_seed_cases.csv",
+    "sha256": "91c292dd0dbbc7af7308175ec454fe8641d0c5f728346ce2cfb16763c3d605d3",
+    "rows": 30,
+    "definition": "Full/NoAffine/NoResidual, each10 cases with seeds0/1/2",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/core_three_seed_cases.csv"
+  },
+  {
+    "table": "S6",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\difficult_case_seed_metrics.csv",
+    "sha256": "9da45d6e2d1f3e35c00b952b7f728d7cbb16abfc199c32dc32b2c65ff72cca88",
+    "rows": 6,
+    "definition": "Full PMR cases6/8, three seeds, tail25mm/NRMS/ROI folding",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/difficult_case_seed_metrics.csv"
+  },
+  {
+    "table": "S7",
+    "source": "experiments\\paperA_advisor_20261023\\analysis\\core_three_seed_cases.csv",
+    "sha256": "91c292dd0dbbc7af7308175ec454fe8641d0c5f728346ce2cfb16763c3d605d3",
+    "rows": 30,
+    "definition": "Within-case seed-mean endpoint ROI folding, then unweighted cohort mean",
+    "bundled_copy": "experiments/paperA_advisor_20261023/analysis/core_three_seed_cases.csv"
+  }
+]

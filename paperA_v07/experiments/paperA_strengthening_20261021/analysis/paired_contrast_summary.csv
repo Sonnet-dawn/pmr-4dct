@@ -1,0 +1,5 @@
+﻿contrast,cases,seeds_per_case,mean_paired_difference_mm,exploratory_case_bootstrap_low_mm,exploratory_case_bootstrap_high_mm,cases_with_lower_seed_averaged_tre
+robust_minus_minmax,10,3,-1.0446495699139802,-1.5167575370438695,-0.7037980150723956,10
+lung_minus_whole,10,3,-0.7968177404155712,-1.4351193763114607,-0.26796162987377214,9
+res10_minus_res1,10,3,-0.12553950914542192,-0.19926712347243608,-0.06841305395476441,9
+nine_minus_eight,10,3,0.03278826149474542,-0.015929222653915987,0.10586833735418674,4

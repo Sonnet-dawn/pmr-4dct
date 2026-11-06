@@ -1,0 +1,279 @@
+{
+  "study": "PMR structural components",
+  "seed": 0,
+  "spacing_mm": 2,
+  "baseline": "../paperA_strengthening_20261021/runs/dirlab_cXX_s0_final",
+  "selection": "All ten DIR-Lab cases; no result-dependent exclusion or tuning.",
+  "inference": "Exploratory single-seed structural comparisons; prior three-seed protocol contrasts retained separately.",
+  "budgets": {
+    "full": [
+      800,
+      800,
+      300
+    ],
+    "noaffine": [
+      800,
+      800,
+      300
+    ],
+    "noresidual": [
+      800,
+      800,
+      0
+    ],
+    "twoharmonics": [
+      800,
+      800,
+      300
+    ],
+    "coarseonly": [
+      800,
+      800,
+      0
+    ]
+  },
+  "coarseonly": "Checkpoint before residual refinement in the NoAffine run, not an independent training execution.",
+  "matched_budget": "No claim that step counts imply matched FLOPs; residual comparisons include 300 additional residual updates.",
+  "jobs": [
+    {
+      "id": "dirlab_c01_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c01_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c01_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c05_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c05_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c05_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c08_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c08_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c08_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c02_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c02_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c02_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c03_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c03_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c03_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c04_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c04_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c04_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c06_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c06_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c06_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c07_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c07_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c07_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c09_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c09_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c09_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c10_s0_noaffine",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "noaffine",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c10_s0_noresidual",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "noresidual",
+      "kind": "pmr"
+    },
+    {
+      "id": "dirlab_c10_s0_twoharmonics",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 0,
+      "arm": "twoharmonics",
+      "kind": "pmr"
+    }
+  ]
+}

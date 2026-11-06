@@ -1,0 +1,6 @@
+﻿case,voxels,peak_gpu_gib,status,source,sha256
+1,14453440,3.25,measured,results\pmr_v2_1mm\v2_1mm_case1_1mm.json,fb68b44873fc59db48b7d3f9233d2b6dd87cb4c48e286a430a644e43d91c464c
+2,24698520,5.82,measured,results\pmr_v2_1mm\v2_1mm_case2_1mm.json,33f322af643ed58211e86d5b6b1075b779bb6c785a987a513b5c5f66efd025c0
+3,22473360,5.32,measured,results\pmr_v2_1mm\v2_1mm_case3_1mm.json,add56527076de5a04c6950f85d753567119bc6acd442b807524a70e81514fe8f
+4,20713208,4.91,measured,results\pmr_v2_1mm\v2_1mm_case4_1mm.json,1a9a0c9f9984e3019294f5ab60373776e2cced67df82aba3ca1f558e37423027
+5,21073860,4.99,measured,results\pmr_v2_1mm\v2_1mm_case5_1mm.json,300ff0ecaf349502b71fb0cf3e217e982b5ecbe3f9fff3d853df66902a989971

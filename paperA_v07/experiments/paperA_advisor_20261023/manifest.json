@@ -1,0 +1,373 @@
+{
+  "study": "Advisor review: prespecified seed extensions",
+  "jobs": [
+    {
+      "id": "dirlab_c08_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c08_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c06_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c06_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c01_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c01_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c02_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c02_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c03_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c03_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c04_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c04_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c05_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c05_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c07_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c07_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c09_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c09_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c10_s1_noresidual",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c10_s2_noresidual",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "noresidual",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c08_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c08_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 8,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c06_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c06_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 6,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c01_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c01_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 1,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c02_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c02_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 2,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c03_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c03_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 3,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c04_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c04_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 4,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c05_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c05_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 5,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c07_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c07_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 7,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c09_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c09_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 9,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c10_s1_noaffine",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 1,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    },
+    {
+      "id": "dirlab_c10_s2_noaffine",
+      "dataset": "dirlab",
+      "case": 10,
+      "seed": 2,
+      "arm": "noaffine",
+      "kind": "pmr",
+      "capture_coarse": false
+    }
+  ],
+  "reused_full": "../paperA_strengthening_20261021/runs",
+  "reused_seed0": "../paperA_components_20261022/runs",
+  "selection": "All ten cases; seeds 1 and 2 for both core arms; no result-dependent selection.",
+  "priority": "Complete all NoResidual replicates before NoAffine replicates.",
+  "comparison": "Seed-paired within case; average the three seed differences within case before 10-case bootstrap.",
+  "budget": "NoResidual uses 1600 encoder steps; full and NoAffine use 1600+300. No identical-compute claim.",
+  "matched_budget": "Do not add 300 encoder steps: this changes optimizer target and stage allocation and does not match FLOPs. Shared NoAffine pre/post-residual checkpoints already provide a stage-linked comparison at seed 0.",
+  "guard": "Single GPU job; 75% global GPU ceiling; 5-GiB RAM floor; same existing guard."
+}

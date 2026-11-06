@@ -1,0 +1,5 @@
+﻿model,comparison,cases,mean_difference_mm,exploratory_low_mm,exploratory_high_mm,cases_with_lower_tre,unit,inference
+noaffine,variant minus full,10,0.11571536023797506,0.006215222448735167,0.31032977151664726,3,case,"single-seed, exploratory, unadjusted intervals"
+noresidual,variant minus full,10,0.40538076129567413,0.22709455740539072,0.5857528351234542,0,case,"single-seed, exploratory, unadjusted intervals"
+twoharmonics,variant minus full,10,0.13167808775417383,0.05582700876378242,0.20682147844742732,2,case,"single-seed, exploratory, unadjusted intervals"
+coarseonly,variant minus full,10,0.4857455098074765,0.258979861736299,0.7639083840593931,0,case,"single-seed, exploratory, unadjusted intervals"

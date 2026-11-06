@@ -1,0 +1,15 @@
+﻿id,silent,recorded_defect
+C1,Yes,**整数降采样丢失输出 origin**
+C2,No,**CREATIS 强度偏移假设错误**
+C3,No,**CREATIS landmark 参考系错误**
+C4,Yes,**无效相位的 landmark 文件是 HTML 404 页**
+C5,Yes,**DL 基线：fixed/moving 用了不同的随机裁剪偏移**
+C6,Yes,**DL 基线：`select` 掩膜聚合在小 patch 上退化为 `return 0`**
+C7,No,**DL 基线：`best` 变量作用域错误**
+C8,Yes,**粗尺度位移场在粗网格上被评估**
+C9,Yes,**LapIRN 多级金字塔：粗一级的位移场被直接 warp 到细一级的图上**（未先重采样对齐网格）
+C10,No,"**调用点把""最后一级""写成了张量切片**：`d = model(f, mv)[-1]`。作者意图是取金字塔最后一级，但 `LapIRN.forward` 默认 `return_all=False` **返回张量**，于是 `[-1]` 取的是**最后一维的切片**，位移从 `(N,3,D,H,W)` 静默变成 `(N,3,D,H,W−1)`"
+E1,Yes,**TRE 口径不对称**：PMR 用标准口径、`results/elastix_baseline` 用有偏旧口径
+E2,Yes,**`transformix -def` 把点坐标当体素索引**（`physical = index × Spacing + Origin`）
+E3,Yes,**`transformix` 把输入索引取整成整数**
+E4,Yes,**分辨率错配**：Elastix 报告值在 **1 mm**，PMR 主结果在 **2 mm**
